@@ -61,7 +61,7 @@ std::string str_replace(const std::string &s, const std::string &match,
     return result;
 }
 
-const std::string
+std::string
 inline_parse(std::vector<std::unique_ptr<inline_parser_interface>> &parsers,
              const std::string text) {
     auto result = text;

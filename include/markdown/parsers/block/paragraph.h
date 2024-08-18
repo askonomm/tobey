@@ -7,10 +7,10 @@
 namespace paragraph_block {
 
 struct block_parser final : public block_parser_interface {
-  bool identifier(const std::string &block) const override;
-  std::string parser(const std::string &block) const override;
+  [[nodiscard]] bool identifier(const std::string &block) const override;
+  [[nodiscard]] std::string parser(const std::string &block) const override;
 };
 
-} // namespace paragraph_block
+}
 
 #endif

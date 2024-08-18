@@ -1,6 +1,6 @@
 # Tobey
 
-A (in-progress) static site generator written in C++. It follows a "not invented here" approach where everything that doesn't come with C++ standard library is written from scratch, such as the modular Markdown, FrontMatter and YAML parsers used.
+A (in-progress) static site generator written in C++. It follows a "not invented here" approach where everything that doesn't come with C++ standard library is written from scratch, such as the Markdown, FrontMatter and YAML parsers used.
 
 ## Progress
 

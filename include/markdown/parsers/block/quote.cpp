@@ -44,4 +44,4 @@ std::string block_parser::parser(const std::string &block) const {
   return "<blockquote>" + result + "</blockquote>";
 }
 
-} // namespace quote_block
+}

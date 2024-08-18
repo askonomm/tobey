@@ -42,4 +42,4 @@ std::string block_parser::parser(const std::string &block) const {
   return "<p>" + result + "</p>";
 }
 
-} // namespace paragraph_block
+}

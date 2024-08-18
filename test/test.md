@@ -9,6 +9,8 @@ Some paragraph text. Some **in bold**. Another **bold**. And exactly same **in b
 
 Another paragraph with some `inline code`. And some ~deleted text~. [Some link](https://google.com).
 
+---
+
 And some ![image](file.jpeg).
 
 > this is quote

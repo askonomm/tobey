@@ -24,4 +24,4 @@ std::string block_parser::parser(const std::string &block) const {
   return "<h" + size_str + ">" + text + "</h" + size_str + ">";
 }
 
-} // namespace heading_block
+}

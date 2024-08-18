@@ -23,4 +23,4 @@ std::string block_parser::parser(const std::string &block) const {
   return "<pre><code>" + code + "</code></pre>";
 }
 
-} // namespace fenced_code_block
+}

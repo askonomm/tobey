@@ -11,6 +11,6 @@ struct block_parser final : public block_parser_interface {
   [[nodiscard]] std::string parser(const std::string &block) const override;
 };
 
-} // namespace heading_block
+}
 
 #endif

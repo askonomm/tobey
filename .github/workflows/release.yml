@@ -28,14 +28,14 @@ jobs:
       - name: Build with CMake
         run: |
           cd build
-          cmake -G Ninja ..
+          cmake -G Ninja -DCMAKE-BUILD-TYPE=Release ..
           cmake --build .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: linux-binaries
-          path: build/
+          name: tobey
+          path: build/Tobey
 
   build-windows:
     name: Build on Windows
@@ -59,14 +59,14 @@ jobs:
       - name: Build with CMake
         run: |
           cd build
-          cmake -G Ninja ..
+          cmake -G Ninja -DCMAKE-BUILD-TYPE=Release ..
           cmake --build .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: windows-binaries
-          path: build/
+          name: tobey.exe
+          path: build/Tobey.exe
 
   release:
     name: Create GitHub Release

@@ -72,7 +72,7 @@ jobs:
             -DCMAKE-BUILD-TYPE=Release \
             -DCMAKE_CXX_FLAGS="-Os -s" \
             -DCMAKE_C_FLAGS="-Os -s" \
-            -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
+            -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF \
             ..
           cmake --build .
 

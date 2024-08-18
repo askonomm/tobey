@@ -1,4 +1,4 @@
-name: Build, Package, and Release
+name: Build and Release
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v2
         with:
-            cmake-version: 3.30.2
+          cmake-version: 3.30.2
 
       - name: Set up Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
@@ -31,16 +31,11 @@ jobs:
           cmake -G Ninja ..
           cmake --build .
 
-      - name: Package distributable
-        run: |
-          cd build
-          cpack -G TGZ .
-
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: linux-build
-          path: build/*.tar.gz
+          name: linux-binaries
+          path: build/
 
   build-windows:
     name: Build on Windows
@@ -64,16 +59,11 @@ jobs:
           cmake -G "Visual Studio 16 2019" -A x64 ..
           cmake --build . --config Release
 
-      - name: Package distributable
-        run: |
-          cd build
-          cpack -G ZIP .
-
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: windows-build
-          path: build/*.zip
+          name: windows-binaries
+          path: build/
 
   release:
     name: Create GitHub Release
@@ -84,14 +74,14 @@ jobs:
       - name: Download Linux build artifact
         uses: actions/download-artifact@v3
         with:
-          name: linux-build
-          path: ./artifacts
+          name: linux-binaries
+          path: ./artifacts/linux
 
       - name: Download Windows build artifact
         uses: actions/download-artifact@v3
         with:
-          name: windows-build
-          path: ./artifacts
+          name: windows-binaries
+          path: ./artifacts/windows
 
       - name: Create GitHub Release
         id: create_release
@@ -104,20 +94,20 @@ jobs:
           body: |
             Release of version ${{ github.ref_name }}.
           draft: false
-          prerelease: false
+          prerelease: true
 
       - name: Upload Linux build to release
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/*.tar.gz
-          asset_name: linux-build-${{ github.ref_name }}.tar.gz
-          asset_content_type: application/gzip
+          asset_path: ./artifacts/linux/
+          asset_name: linux-binaries-${{ github.ref_name }}
+          asset_content_type: application/octet-stream
 
       - name: Upload Windows build to release
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/*.zip
-          asset_name: windows-build-${{ github.ref_name }}.zip
-          asset_content_type: application/zip
+          asset_path: ./artifacts/windows/
+          asset_name: windows-binaries-${{ github.ref_name }}
+          asset_content_type: application/octet-stream

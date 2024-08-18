@@ -31,7 +31,12 @@ jobs:
       - name: Build with CMake
         run: |
           cd build
-          cmake -G Ninja -DCMAKE-BUILD-TYPE=Release ..
+          cmake -G Ninja \
+            -DCMAKE-BUILD-TYPE=Release \
+            -DCMAKE_CXX_FLAGS="-Os -s" \
+            -DCMAKE_C_FLAGS="-Os -s" \
+            -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
+            ..
           cmake --build .
 
       - name: Upload artifact
@@ -62,7 +67,12 @@ jobs:
       - name: Build with CMake
         run: |
           cd build
-          cmake -G Ninja -DCMAKE-BUILD-TYPE=Release ..
+          cmake -G Ninja \
+            -DCMAKE-BUILD-TYPE=Release \
+            -DCMAKE_CXX_FLAGS="-Os -s" \
+            -DCMAKE_C_FLAGS="-Os -s" \
+            -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
+            ..
           cmake --build .
 
       - name: Upload artifact

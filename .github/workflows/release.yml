@@ -101,4 +101,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: true
-          files: *
+          files: "*"

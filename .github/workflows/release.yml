@@ -65,6 +65,7 @@ jobs:
         uses: seanmiddleditch/gha-setup-ninja@master
 
       - name: Build with CMake
+        shell: bash
         run: |
           cd build
           cmake -G Ninja \

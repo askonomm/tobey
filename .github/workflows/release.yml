@@ -84,12 +84,18 @@ jobs:
           pattern: tobey*
           merge-multiple: false
 
+      - name: Tar Linux build artifact
+        run: tar -czvf tobey.tar.gz tobey
+
       - name: Download Windows build artifact
         uses: actions/download-artifact@v4
         with:
           name: tobey.exe
           pattern: tobey*
           merge-multiple: false
+
+      - name: Rename Windows build artifact
+        run: mv Tobey.exe tobey.exe
 
       - name: Display
         run: ls -la

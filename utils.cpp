@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 
-std::string read_markdown_file(const std::string &filename) {
+std::string read_file(const std::string &filename) {
     std::ifstream file(filename);
-    std::string markdown;
+    std::string contents;
 
     if (file) {
         file.seekg(0, std::ios::end);
@@ -14,8 +14,8 @@ std::string read_markdown_file(const std::string &filename) {
         std::vector<char> buffer(length);
         file.read(&buffer[0], length);
 
-        markdown = std::string(buffer.begin(), buffer.end());
+        contents = std::string(buffer.begin(), buffer.end());
     }
 
-    return str_trim(markdown);
+    return str_trim(contents);
 }

@@ -2,6 +2,12 @@
 
 A (in-progress) static site generator written in C++. It follows a "not invented here" approach where everything that doesn't come with C++ standard library is written from scratch, such as the Markdown, FrontMatter and YAML parsers used.
 
+## Goal
+
+- Have a simple, fast and easy to use static site generator.
+- Built from zero and with no dependencies.
+- Built and published a Markdown parser, a YAML parser and a FrontMatter parser.
+
 ## Progress
 
 - [todo] Static Site Generator

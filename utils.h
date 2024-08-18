@@ -3,6 +3,6 @@
 
 #include <string>
 
-std::string read_markdown_file(const std::string &filename);
+std::string read_file(const std::string &filename);
 
 #endif //UTILS_H

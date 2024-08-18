@@ -12,5 +12,4 @@ add_executable(Tobey main.cpp
         utils.h
         utils.cpp
         ${SOURCES}
-        include/yaml/yaml.cpp
 )

@@ -49,47 +49,69 @@ static std::string join_by_crlf(const std::vector<std::string> &blocks) {
 }
 
 namespace markdown {
+  std::string parse(const std::string &input, const std::vector<std::unique_ptr<block_parser_interface>>& block_parsers) {
+    // make input into blocks
+    const std::vector<std::string> raw_blocks = split_by_crlf(input);
 
-std::string parse(const std::string &input) {
-  // block parsers
-  std::vector<std::unique_ptr<block_parser_interface>> block_parsers;
+    // stitch fenced code blocks
+    const std::vector<std::string> stitched_blocks =
+        stitch_fenced_code_blocks(raw_blocks);
 
-  // paragraph block parser
-  block_parsers.push_back(std::make_unique<paragraph_block::block_parser>());
+    // parse blocks
+    std::vector<std::string> parsed_blocks;
 
-  // heading block parser
-  block_parsers.push_back(std::make_unique<heading_block::block_parser>());
-
-  // line break block parser
-  block_parsers.push_back(std::make_unique<line_break_block::block_parser>());
-
-  // fenced code block parser
-  block_parsers.push_back(std::make_unique<fenced_code_block::block_parser>());
-
-  // quote block parser
-  block_parsers.push_back(std::make_unique<quote_block::block_parser>());
-
-  // make input into blocks
-  const std::vector<std::string> raw_blocks = split_by_crlf(input);
-
-  // stitch fenced code blocks
-  const std::vector<std::string> stitched_blocks =
-      stitch_fenced_code_blocks(raw_blocks);
-
-  // parse blocks
-  std::vector<std::string> parsed_blocks;
-
-  for (const auto &block : stitched_blocks) {
-    for (const auto &parser : block_parsers) {
-      if (const std::string trimmed_block = str_trim(block); parser->identifier(trimmed_block)) {
-        parsed_blocks.push_back(parser->parser(trimmed_block));
-        break;
+    for (const auto &block : stitched_blocks) {
+      for (const auto &parser : block_parsers) {
+        if (const std::string trimmed_block = str_trim(block); parser->identifier(trimmed_block)) {
+          parsed_blocks.push_back(parser->parser(trimmed_block));
+          break;
+        }
       }
     }
+
+    // join by \n\n
+    return join_by_crlf(parsed_blocks);
   }
 
-  // join by \n\n
-  return join_by_crlf(parsed_blocks);
-}
+  std::string parse(const std::string &input) {
+    // block parsers
+    std::vector<std::unique_ptr<block_parser_interface>> block_parsers;
 
+    // paragraph block parser
+    block_parsers.push_back(std::make_unique<paragraph_block::block_parser>());
+
+    // heading block parser
+    block_parsers.push_back(std::make_unique<heading_block::block_parser>());
+
+    // line break block parser
+    block_parsers.push_back(std::make_unique<line_break_block::block_parser>());
+
+    // fenced code block parser
+    block_parsers.push_back(std::make_unique<fenced_code_block::block_parser>());
+
+    // quote block parser
+    block_parsers.push_back(std::make_unique<quote_block::block_parser>());
+
+    // make input into blocks
+    const std::vector<std::string> raw_blocks = split_by_crlf(input);
+
+    // stitch fenced code blocks
+    const std::vector<std::string> stitched_blocks =
+        stitch_fenced_code_blocks(raw_blocks);
+
+    // parse blocks
+    std::vector<std::string> parsed_blocks;
+
+    for (const auto &block : stitched_blocks) {
+      for (const auto &parser : block_parsers) {
+        if (const std::string trimmed_block = str_trim(block); parser->identifier(trimmed_block)) {
+          parsed_blocks.push_back(parser->parser(trimmed_block));
+          break;
+        }
+      }
+    }
+
+    // join by \n\n
+    return join_by_crlf(parsed_blocks);
+  }
 } // namespace markdown

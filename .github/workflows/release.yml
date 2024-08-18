@@ -101,6 +101,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: true
-          files: |
-            tobey
-            Tobey.exe
+          files: *

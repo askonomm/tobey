@@ -83,7 +83,7 @@ jobs:
       - name: Download Windows build artifact
         uses: actions/download-artifact@v3
         with:
-          name: windows-binaries
+          name: tobey.exe
           path: ./artifacts/tobey.exe
 
       - name: Create GitHub Release

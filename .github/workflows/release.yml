@@ -77,12 +77,12 @@ jobs:
       - name: Download Linux build artifact
         uses: actions/download-artifact@v4
         with:
-          name: tobey
+          name: ./build/tobey
 
       - name: Download Windows build artifact
         uses: actions/download-artifact@v3
         with:
-          name: tobey.exe
+          name: ./build/tobey.exe
 
       - name: Display
         run: ls -la

@@ -84,6 +84,9 @@ jobs:
         with:
           name: tobey.exe
 
+      - name: Display
+        run: ls -la
+
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v2
@@ -92,5 +95,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: true
           files: |
-            tobey
-            tobey.exe
+            ./tobey
+            ./tobey.exe

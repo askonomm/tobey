@@ -113,18 +113,18 @@ namespace yaml {
     }
 
     void debug_print(const std::vector<Node>& nodes, const int indent = 0) {
-        for (const auto& node : nodes) {
+        for (const auto&[key, value] : nodes) {
             std::string indent_str(indent, ' ');
 
-            if (!node.key.empty()) {
-                std::cout << indent_str << "Key: " << node.key << std::endl;
+            if (!key.empty()) {
+                std::cout << indent_str << "Key: " << key << std::endl;
             }
 
-            if (std::holds_alternative<std::string>(node.value)) {
-                std::cout << indent_str << "Value: " << std::get<std::string>(node.value) << std::endl;
-            } else if(std::holds_alternative<std::vector<Node>>(node.value)) {
+            if (std::holds_alternative<std::string>(value)) {
+                std::cout << indent_str << "Value: " << std::get<std::string>(value) << std::endl;
+            } else if(std::holds_alternative<std::vector<Node>>(value)) {
                 std::cout << indent_str << "Block:\n";
-                debug_print(std::get<std::vector<Node>>(node.value), indent + 2);
+                debug_print(std::get<std::vector<Node>>(value), indent + 2);
             }
         }
     }

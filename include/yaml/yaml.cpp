@@ -112,6 +112,16 @@ namespace yaml {
         return parse_block(stream, 0);
     }
 
+    std::variant<std::string, std::vector<Node>> get_value(const std::vector<Node>& nodes, const std::string& key) {
+        for (const auto&[k, v] : nodes) {
+            if (k == key) {
+                return v;
+            }
+        }
+
+        return "";
+    }
+
     void debug_print(const std::vector<Node>& nodes, const int indent = 0) {
         for (const auto&[key, value] : nodes) {
             std::string indent_str(indent, ' ');

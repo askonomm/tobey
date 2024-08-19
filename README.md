@@ -15,7 +15,7 @@ A (in-progress) static site generator written in C++. It follows a "not invented
   - [todo] Generate HTML files
   - [todo] Use `layout` frontmatter key to build views out of templates
 - [todo] FrontMatter parser
-- [todo] YAML parser
+- **[done]** ~YAML parser~
 - [todo] Markdown parser
   - [todo] Block parsers
     - **[done]** ~Paragraph block parser~

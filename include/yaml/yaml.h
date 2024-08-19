@@ -15,6 +15,9 @@ namespace yaml {
     };
 
     std::vector<Node> parse(const std::string &input);
+
+    std::variant<std::string, std::vector<Node>> get_value(const std::vector<Node>& nodes, const std::string& key);
+
     void debug_print(const std::vector<Node>& nodes, int indent = 0);
 }
 

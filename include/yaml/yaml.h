@@ -15,6 +15,7 @@ namespace yaml {
     };
 
     std::vector<Node> parse(const std::string &input);
+    void debug_print(const std::vector<Node>& nodes, int indent = 0);
 }
 
 #endif //YAML_H

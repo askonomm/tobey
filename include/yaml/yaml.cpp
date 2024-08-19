@@ -62,37 +62,44 @@ namespace yaml {
             }
 
             line = trim(line);
-
-            // again, skip empty lines
             if (line.empty()) continue;
+
+            // list item - belongs to the previously created node
+            if (line.front() == '-') {
+                Node node;
+                node.key = "";
+                node.value = trim(line.substr(1));
+                nodes.push_back(node);
+                continue;
+            }
 
             const auto colon_pos = line.find(':');
 
             if (colon_pos == std::string::npos) {
-                std::cout << line << std::endl;
-                std::cout << colon_pos << std::endl;
                 throw std::runtime_error("Invalid yaml syntax");
             }
 
             Node node;
             node.key = trim(line.substr(0, colon_pos));
-            std::string value_indicator = trim(line.substr(colon_pos + 1));
+            auto value = trim(line.substr(colon_pos + 1));
             const auto next_indent = static_cast<int>(current_indent + 1);
 
-            if (value_indicator.empty()) {
-                // check if value is a nested block
-                if (stream.peek() == ' ' || stream.peek() == '\t') {
-                    node.value = parse_block(stream, next_indent);
-                } else {
-                    node.value = "";
-                }
-            } else if (value_indicator == "|") {
-                // multiline string
-                node.value = parse_multiline_value(stream, next_indent);
-            } else {
-                node.value = value_indicator;
+            // nested block
+            if (value.empty() && (stream.peek() == ' ' || stream.peek() == '\t')) {
+                node.value = parse_block(stream, next_indent);
+                nodes.push_back(node);
+                continue;
             }
 
+            // multiline string
+            if (value == "|") {
+                node.value = parse_multiline_value(stream, next_indent);
+                nodes.push_back(node);
+                continue;
+            }
+
+            // single value
+            node.value = value;
             nodes.push_back(node);
         }
 
@@ -103,5 +110,22 @@ namespace yaml {
         std::istringstream stream(input);
 
         return parse_block(stream, 0);
+    }
+
+    void debug_print(const std::vector<Node>& nodes, const int indent = 0) {
+        for (const auto& node : nodes) {
+            std::string indent_str(indent, ' ');
+
+            if (!node.key.empty()) {
+                std::cout << indent_str << "Key: " << node.key << std::endl;
+            }
+
+            if (std::holds_alternative<std::string>(node.value)) {
+                std::cout << indent_str << "Value: " << std::get<std::string>(node.value) << std::endl;
+            } else if(std::holds_alternative<std::vector<Node>>(node.value)) {
+                std::cout << indent_str << "Block:\n";
+                debug_print(std::get<std::vector<Node>>(node.value), indent + 2);
+            }
+        }
     }
 }

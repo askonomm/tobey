@@ -9,11 +9,13 @@ int main() {
     const std::string test_yaml = read_file("/Users/askon/CLionProjects/Tobey/test/test.yaml");
 
     //std::cout << markdown::parse(test_md) << std::endl;
-    auto nodes = yaml::parse(test_yaml);
+    const auto data = yaml::parse(test_yaml);
+    const auto version = std::get<std::string>(data.at("version"));
+    std::cout << "Version: " << version << std::endl;
+    //const auto& version = std::move(data.at("version"));
 
-    // print nodes
-    debug_print(nodes);
-
+    // print version
+    //std::cout << "Version: " << std::get<std::string>(version) << std::endl;
 
 
     return 0;

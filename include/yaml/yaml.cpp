@@ -1,8 +1,10 @@
 #include <iostream>
+#include <memory>
 #include <string>
 #include <variant>
 #include <vector>
 #include <sstream>
+#include <unordered_map>
 
 namespace yaml {
     struct Node {
@@ -106,36 +108,60 @@ namespace yaml {
         return nodes;
     }
 
-    std::vector<Node> parse(const std::string &input) {
-        std::istringstream stream(input);
+    struct RecursiveMap;
+    using RecursiveVariant = std::variant<std::string, std::unique_ptr<RecursiveMap>>;
+    struct RecursiveMap : public std::unordered_map<std::string, RecursiveVariant> {};
 
-        return parse_block(stream, 0);
-    }
+    RecursiveMap compose_map(const RecursiveMap& map) {
+        RecursiveMap composed_map;
 
-    std::variant<std::string, std::vector<Node>> get_value(const std::vector<Node>& nodes, const std::string& key) {
-        for (const auto&[k, v] : nodes) {
-            if (k == key) {
-                return v;
-            }
-        }
-
-        return "";
-    }
-
-    void debug_print(const std::vector<Node>& nodes, const int indent = 0) {
-        for (const auto&[key, value] : nodes) {
-            std::string indent_str(indent, ' ');
-
-            if (!key.empty()) {
-                std::cout << indent_str << "Key: " << key << std::endl;
-            }
-
+        for (const auto& [key, value] : map) {
             if (std::holds_alternative<std::string>(value)) {
-                std::cout << indent_str << "Value: " << std::get<std::string>(value) << std::endl;
-            } else if(std::holds_alternative<std::vector<Node>>(value)) {
-                std::cout << indent_str << "Block:\n";
-                debug_print(std::get<std::vector<Node>>(value), indent + 2);
+                composed_map[key] = std::get<std::string>(value);
+            } else {
+                // Recursively compose and store in a unique_ptr
+                composed_map[key] = std::make_unique<RecursiveMap>(compose_map(*std::get<std::unique_ptr<RecursiveMap>>(value)));
             }
         }
+
+        return composed_map;
+    }
+
+    RecursiveMap node_to_map(const Node& node) {
+        RecursiveMap map;
+
+        if (std::holds_alternative<std::string>(node.value)) {
+            map[node.key] = std::get<std::string>(node.value);
+        } else {
+            auto child_map = std::make_unique<RecursiveMap>();
+
+            for (const auto& child_node : std::get<std::vector<Node>>(node.value)) {
+                auto nested_map = node_to_map(child_node);
+
+                for (auto& [key, value] : nested_map) {
+                    (*child_map)[key] = std::move(value);
+                }
+            }
+
+            map[node.key] = std::move(child_map);
+        }
+
+        return map;
+    }
+
+    RecursiveMap parse(const std::string &input) {
+        std::istringstream stream(input);
+        auto nodes = parse_block(stream, 0);
+        RecursiveMap map;
+
+        for (const auto& node : nodes) {
+            if (std::holds_alternative<std::string>(node.value)) {
+                map[node.key] = std::get<std::string>(node.value);
+            } else if (std::holds_alternative<std::vector<Node>>(node.value)) {
+                map[node.key] = std::make_unique<RecursiveMap>(node_to_map(node));
+            }
+        }
+
+        return map;
     }
 }

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <string>
 #include <variant>
 #include <vector>
@@ -108,60 +109,27 @@ namespace yaml {
         return nodes;
     }
 
-    struct RecursiveMap;
-    using RecursiveVariant = std::variant<std::string, std::unique_ptr<RecursiveMap>>;
-    struct RecursiveMap : public std::unordered_map<std::string, RecursiveVariant> {};
+     std::vector<Node> parse(const std::string &input) {
+        std::istringstream stream(input);
 
-    RecursiveMap compose_map(const RecursiveMap& map) {
-        RecursiveMap composed_map;
-
-        for (const auto& [key, value] : map) {
-            if (std::holds_alternative<std::string>(value)) {
-                composed_map[key] = std::get<std::string>(value);
-            } else {
-                // Recursively compose and store in a unique_ptr
-                composed_map[key] = std::make_unique<RecursiveMap>(compose_map(*std::get<std::unique_ptr<RecursiveMap>>(value)));
-            }
-        }
-
-        return composed_map;
+        return parse_block(stream, 0);
     }
 
-    RecursiveMap node_to_map(const Node& node) {
-        RecursiveMap map;
+    std::optional<Node> find(const std::vector<Node> &nodes, const std::string &key) {
+        for (const auto &node : nodes) {
+            if (node.key == key) {
+                return node;
+            }
 
-        if (std::holds_alternative<std::string>(node.value)) {
-            map[node.key] = std::get<std::string>(node.value);
-        } else {
-            auto child_map = std::make_unique<RecursiveMap>();
+            if (std::holds_alternative<std::vector<Node>>(node.value)) {
+                const auto &nested_nodes = std::get<std::vector<Node>>(node.value);
 
-            for (const auto& child_node : std::get<std::vector<Node>>(node.value)) {
-                auto nested_map = node_to_map(child_node);
-
-                for (auto& [key, value] : nested_map) {
-                    (*child_map)[key] = std::move(value);
+                if (const auto result = find(nested_nodes, key)) {
+                    return result;
                 }
             }
-
-            map[node.key] = std::move(child_map);
         }
 
-        return map;
-    }
-
-    RecursiveMap parse(const std::string &input) {
-        std::istringstream stream(input);
-        auto nodes = parse_block(stream, 0);
-        RecursiveMap map;
-
-        for (const auto& node : nodes) {
-            if (std::holds_alternative<std::string>(node.value)) {
-                map[node.key] = std::get<std::string>(node.value);
-            } else if (std::holds_alternative<std::vector<Node>>(node.value)) {
-                map[node.key] = std::make_unique<RecursiveMap>(node_to_map(node));
-            }
-        }
-
-        return map;
+        return std::nullopt;
     }
 }

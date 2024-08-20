@@ -6,7 +6,9 @@
 #define YAML_H
 
 #include <string>
-#include <unordered_map>
+#include <memory>
+#include <optional>
+#include <vector>
 #include <variant>
 
 namespace yaml {
@@ -15,10 +17,9 @@ namespace yaml {
         std::variant<std::string, std::vector<Node>> value;
     };
 
-    struct RecursiveMap;
-    using RecursiveVariant = std::variant<std::string, std::unique_ptr<RecursiveMap>>;
-    struct RecursiveMap : public std::unordered_map<std::string, RecursiveVariant> {};
-    RecursiveMap parse(const std::string &input);
+    std::vector<Node> parse(const std::string &input);
+
+    std::optional<Node> find(const std::vector<Node> &nodes, const std::string &key);
 }
 
 #endif //YAML_H

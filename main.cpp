@@ -12,9 +12,9 @@ int main() {
 
     //std::cout << markdown::parse(test_md) << std::endl;
     const auto [nodes, markdown] = frontmatter::parse(test_fm);
-    const auto title = yaml::find(nodes, "title");
+    const auto title = yaml::find_node_str_value(nodes, "title");
 
     std::cout << "Markdown: " << markdown << std::endl;
-    std::cout << "Title: " << std::get<std::string>(title->value) << std::endl;
+    std::cout << "Title: " << *title << std::endl;
     return 0;
 }

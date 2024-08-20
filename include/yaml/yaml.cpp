@@ -115,7 +115,7 @@ namespace yaml {
         return parse_block(stream, 0);
     }
 
-    std::optional<Node> find(const std::vector<Node> &nodes, const std::string &key) {
+    std::optional<Node> find_node(const std::vector<Node> &nodes, const std::string &key) {
         for (const auto &node : nodes) {
             if (node.key == key) {
                 return node;
@@ -124,10 +124,18 @@ namespace yaml {
             if (std::holds_alternative<std::vector<Node>>(node.value)) {
                 const auto &nested_nodes = std::get<std::vector<Node>>(node.value);
 
-                if (const auto result = find(nested_nodes, key)) {
+                if (const auto result = find_node(nested_nodes, key)) {
                     return result;
                 }
             }
+        }
+
+        return std::nullopt;
+    }
+
+    std::optional<std::string> find_node_str_value(const std::vector<Node> &nodes, const std::string &key) {
+        if (const auto node = find_node(nodes, key)) {
+            return std::get<std::string>(node->value);
         }
 
         return std::nullopt;

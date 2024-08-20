@@ -5,7 +5,6 @@
 #include <variant>
 #include <vector>
 #include <sstream>
-#include <unordered_map>
 
 namespace yaml {
     struct Node {

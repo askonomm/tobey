@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-const std::vector<std::string>
-stitch_fenced_code_blocks(const std::vector<std::string> &blocks);
+std::vector<std::string> stitch_fenced_code_blocks(const std::vector<std::string> &blocks);
 
 #endif

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-const std::string str_trim(const std::string &s);
+std::string str_trim(const std::string &s);
 
 bool str_starts_with(const std::string &s, const std::string &prefix);
 

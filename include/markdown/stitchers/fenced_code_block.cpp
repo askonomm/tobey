@@ -2,8 +2,7 @@
 #include <string>
 #include <vector>
 
-std::vector<std::string>
-stitch_fenced_code_blocks(const std::vector<std::string> &blocks) {
+std::vector<std::string> stitch_fenced_code_blocks(const std::vector<std::string> &blocks) {
   std::vector<std::string> ublocks = blocks;
   for (size_t i = 0; i < ublocks.size(); ++i) {
     if (str_starts_with(ublocks[i], "```") &&

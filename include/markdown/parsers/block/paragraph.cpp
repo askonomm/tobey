@@ -39,7 +39,7 @@ std::string block_parser::parser(const std::string &block) const {
   // parse inline
   result = inline_parse(inline_parsers, result);
 
-  return "<p>" + result + "</p>";
+  return "<p>" + str_trim(result) + "</p>";
 }
 
 }

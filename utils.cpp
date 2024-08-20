@@ -2,9 +2,10 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 std::string read_file(const std::string &filename) {
-    std::ifstream file(filename);
+    std::ifstream file(filename, std::ios::binary);
     std::string contents;
 
     if (file) {
@@ -14,8 +15,9 @@ std::string read_file(const std::string &filename) {
         std::vector<char> buffer(length);
         file.read(&buffer[0], length);
 
-        contents = std::string(buffer.begin(), buffer.end());
+        const auto null_pos = std::ranges::find(buffer, '\0');
+        contents.assign(buffer.begin(), null_pos);
     }
 
-    return str_trim(contents);
+    return contents;
 }

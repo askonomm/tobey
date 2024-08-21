@@ -5,11 +5,14 @@ project(Tobey)
 set(CMAKE_CXX_STANDARD 26)
 
 # Glob all source files recursively
-file(GLOB_RECURSE SOURCES "include/*.cpp" "include/*.h")
+file(GLOB_RECURSE SOURCES "include/*.cpp" "include/*.h" "src/*.cpp" "src/*.h")
 
 # Add the executable target
 add_executable(Tobey main.cpp
-        utils.h
-        utils.cpp
+        src/utils.h
+        src/utils.cpp
         ${SOURCES}
 )
+
+# static linking
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")

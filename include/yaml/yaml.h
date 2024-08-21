@@ -19,9 +19,9 @@ namespace yaml {
 
     std::vector<Node> parse(const std::string &input);
 
-    std::optional<Node> find(const std::vector<Node> &nodes, const std::string &key);
+    std::optional<Node> find_maybe_node(const std::vector<Node> &nodes, const std::string &key);
 
-    std::optional<std::string> find_node_str_value(const std::vector<Node> &nodes, const std::string &key);
+    std::optional<std::string> find_maybe_str(const std::vector<Node> &nodes, const std::string &key);
 }
 
 #endif //YAML_H

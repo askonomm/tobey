@@ -1,20 +1,13 @@
-#include "include/markdown/markdown.h"
-#include "utils.h"
+#include <filesystem>
 #include <iostream>
 
-#include "include/yaml/yaml.h"
-#include "include/frontmatter/frontmatter.h"
+#include "src/tobey.h"
 
 int main() {
-    //const std::string test_md = read_file("/Users/askon/CLionProjects/Tobey/test/test.md");
-    //const std::string test_yaml = read_file("/Users/askon/CLionProjects/Tobey/test/test.yaml");
-    const std::string test_fm = read_file("/Users/askon/CLionProjects/Tobey/test/testfm.md");
+    std::cout << "Hello, World!" << std::endl;
+    tobey::run(std::filesystem::current_path().string());
+    setvbuf (stdout, nullptr, _IONBF, 0);
 
-    //std::cout << markdown::parse(test_md) << std::endl;
-    const auto [nodes, markdown] = frontmatter::parse(test_fm);
-    const auto title = yaml::find_node_str_value(nodes, "title");
-
-    std::cout << "Markdown: " << markdown << std::endl;
-    std::cout << "Title: " << *title << std::endl;
-    return 0;
+    printf("Hello, World!\n");
+    return 1;
 }

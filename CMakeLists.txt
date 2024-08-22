@@ -5,7 +5,7 @@ project(tobey)
 set(CMAKE_CXX_STANDARD 26)
 
 # Glob all source files recursively
-file(GLOB_RECURSE SOURCES "include/*.cpp" "include/*.h" "src/*.cpp" "src/*.h")
+file(GLOB_RECURSE SOURCES "include/*.cpp" "include/*.h" "src/*.cpp" "src/*.h" "libs/*.hpp")
 
 # Add the executable target
 add_executable(tobey main.cpp ${SOURCES})

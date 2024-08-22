@@ -101,6 +101,11 @@ namespace yaml {
             }
 
             // single value
+            // if it has surrounding quotes, remove them
+            if (value.front() == '"' && value.back() == '"') {
+                value = value.substr(1, value.size() - 2);
+            }
+
             node.value = value;
             nodes.push_back(node);
         }

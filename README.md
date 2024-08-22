@@ -2,6 +2,8 @@
 
 A (in-progress) static site generator written in C++. It follows a "not invented here" approach where everything that doesn't come with C++ standard library is written from scratch, such as the Markdown, FrontMatter and YAML parsers used.
 
+Update: I've decided to use an external lib for the Mustache template engine, so that's the only dependency now.
+
 ## Goal
 
 - Have a simple, fast and easy to use static site generator.
@@ -11,9 +13,9 @@ A (in-progress) static site generator written in C++. It follows a "not invented
 ## Progress
 
 - [todo] Static Site Generator
-  - [todo] Read Markdown in directories
-  - [todo] Generate HTML files
-  - [todo] Use `layout` frontmatter key to build views out of templates
+  - **[done]** ~Read Markdown in directories~
+  - **[done]** ~Generate HTML files~
+  - **[done]** ~Use `layout` frontmatter key to build views out of templates~
 - **[done]** ~FrontMatter parser~
 - **[done]** ~YAML parser~
 - [todo] Markdown parser

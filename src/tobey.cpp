@@ -93,10 +93,12 @@ namespace tobey {
             for (const auto& [key, value] : nodes) {
                 auto value_str = std::get<std::string>(value);
                 std::string placeholder = "{" + key + "}";
+                std::string::size_type start = 0;
 
-                if (const auto start = output.find(placeholder); start != std::string::npos) {
+                while ((start = output.find(placeholder, start)) != std::string::npos) {
                     const auto size = placeholder.size();
                     output.replace(start, size, value_str);
+                    start += value_str.size();
                 }
             }
 

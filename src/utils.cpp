@@ -23,5 +23,7 @@ std::string read_file(const std::string &filename) {
 }
 
 void write_file(const std::string &output_path, const std::string &output) {
-
+    std::ofstream outfile(output_path);
+    outfile << output << std::endl;
+    outfile.close();
 }

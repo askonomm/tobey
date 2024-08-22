@@ -1,14 +1,12 @@
 #include <vector>
 #include <filesystem>
 #include <unordered_map>
+#include <iostream>
 
 #include "tobey.h"
 #include "utils.h"
 #include "../include/frontmatter/frontmatter.h"
-
-namespace yaml {
-    struct Node;
-}
+#include "../include/yaml/yaml.h"
 
 namespace tobey {
     std::vector<std::string> get_files(const std::string &directory, const std::string &extension) {
@@ -82,19 +80,38 @@ namespace tobey {
         }
 
         // write output
-        for (const auto& [nodes, markdown] : content) {
+        for (const auto& [nodes, html] : content) {
             const auto layout = yaml::find_maybe_str(nodes, "layout");
 
             if (!layout) {
                 throw std::runtime_error("Layout not found in frontmatter");
             }
 
-            const auto layout_content = layouts[*layout];
+            auto& output = layouts.at(*layout);
+
+            // replace all {.*} with frontmatter values
+            for (const auto& [key, value] : nodes) {
+                auto value_str = std::get<std::string>(value);
+                std::string placeholder = "{" + key + "}";
+
+                if (const auto start = output.find(placeholder); start != std::string::npos) {
+                    const auto size = placeholder.size();
+                    output.replace(start, size, value_str);
+                }
+            }
+
+            // add {html}
+            std::string placeholder = "{html}";
+            const auto start = output.find(placeholder);
+            const auto size = placeholder.size();
+            output.replace(start, size, html);
+
             const auto output_path = std::string(output_dir)
                 .append(dir_separator)
                 .append(*yaml::find_maybe_str(nodes, "slug"))
                 .append(".html");
 
+            std::cout << "Writing to " << output_path << std::endl;
             write_file(output_path, output);
         }
     }

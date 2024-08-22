@@ -21,3 +21,7 @@ std::string read_file(const std::string &filename) {
 
     return contents;
 }
+
+void write_file(const std::string &output_path, const std::string &output) {
+
+}

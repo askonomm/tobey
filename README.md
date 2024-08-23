@@ -1,14 +1,8 @@
 # Tobey
 
-A (in-progress) static site generator written in C++. It follows a "not invented here" approach where everything that doesn't come with C++ standard library is written from scratch, such as the Markdown, FrontMatter and YAML parsers used.
-
-Update: I've decided to use an external lib for the Mustache template engine, so that's the only dependency now.
-
-## Goal
-
-- Have a simple, fast and easy to use static site generator.
-- Built from zero and with no dependencies.
-- Built and published a Markdown parser, a YAML parser and a FrontMatter parser.
+A static site generator written in C++. I've created this as a means to learn C++, and thus I've written as much as I  
+reasonably wanted from scratch myself, such as the YAML, Markdown and FrontMatter parsers. The only external libary used 
+here is the [Mustache](https://github.com/kainjow/Mustache/blob/master/mustache.hpp) templating library.
 
 ## Progress
 

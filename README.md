@@ -1,8 +1,6 @@
 # Tobey
 
-A static site generator written in C++. I've created this as a means to learn C++, and thus I've written as much as I  
-reasonably wanted from scratch myself, such as the YAML, Markdown and FrontMatter parsers. The only external libary used 
-here is the [Mustache](https://github.com/kainjow/Mustache/blob/master/mustache.hpp) templating library.
+A static site generator written in C++. I've created this as a means to learn C++, and thus I've written as much as I reasonably wanted from scratch myself, such as the YAML, Markdown and FrontMatter parsers. The only external libary used here is the [Mustache](https://github.com/kainjow/Mustache/blob/master/mustache.hpp) templating library.
 
 ## Progress
 

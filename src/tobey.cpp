@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <unordered_map>
 #include <iostream>
+#include <stack>
 
 #include "tobey.h"
 #include "utils.h"
@@ -9,103 +10,152 @@
 #include "../include/yaml/yaml.h"
 #include "../libs/mustache.hpp"
 
-namespace tobey
+/**
+ * Recursively traverses `directory` for any files matching `extension`,
+ * and returns a vector of strings containing the full file paths.
+ *
+ * @param directory to search
+ * @param extension file extension to search for
+ * @return vector of strings containing full file paths
+ */
+std::vector<std::string> get_files(const std::string& directory, const std::string& extension)
 {
-    std::vector<std::string> get_files(const std::string& directory, const std::string& extension)
+    std::vector<std::string> files;
+    std::stack<std::string> directories;
+
+    // if directory does not exist, return early
+    if (!std::filesystem::exists(directory))
     {
-        std::vector<std::string> files;
-
-        // if directory does not exist, attempt creating it
-        if (!std::filesystem::exists(directory))
-        {
-            std::filesystem::create_directory(directory);
-        }
-
-        for (const auto& entry : std::filesystem::directory_iterator(directory))
-        {
-            if (entry.is_regular_file() && entry.path().extension() == extension)
-            {
-                const auto relative_path = std::filesystem::relative(entry.path(), directory);
-                files.push_back(relative_path.string());
-            }
-        }
-
         return files;
     }
 
-    std::vector<std::string> get_content_files(const std::string& directory)
+    // start with the root directory
+    directories.push(directory);
+
+    // traverse the stack of directories
+    while (!directories.empty())
     {
-        return get_files(directory, ".md");
+        auto current_directory = directories.top();
+        directories.pop();
+
+        for (const auto& entry : std::filesystem::directory_iterator(current_directory))
+        {
+            if (entry.is_regular_file() && entry.path().extension() == extension)
+            {
+                files.push_back(entry.path().string());
+            }
+            else if (entry.is_directory())
+            {
+                directories.push(entry.path().string());
+            }
+        }
     }
 
-    std::tuple<std::vector<yaml::Node>, std::string> compose_content(const std::string& content)
+    return files;
+}
+
+/**
+ * Returns a vector of strings containing the full file paths of all
+ * `.md` files in `directory`.
+ *
+ * @param directory to search
+ * @return vector of strings containing full file paths
+ */
+std::vector<std::string> get_content_files(const std::string& directory)
+{
+    return get_files(directory, ".md");
+}
+
+/**
+ *
+ * @param directory directory to search
+ * @return vector of strings containing full file paths
+ */
+std::vector<std::string> get_layout_files(const std::string& directory)
+{
+    return get_files(directory, ".html");
+}
+
+/**
+ * Reads the content of each file in `files` and returns a vector of vectors
+ * of yaml::Node.
+ *
+ * @param files vector of strings containing full file paths
+ * @return vector of vectors of yaml::Node
+ */
+std::vector<std::vector<yaml::Node>> get_content(const std::vector<std::string>& files)
+{
+    std::vector<std::vector<yaml::Node>> content;
+
+    for (const std::string& file : files)
     {
-        return frontmatter::parse(content);
+        const auto fm = frontmatter::parse(utils::read_file(file));
+        auto nodes = std::get<0>(fm);
+        const auto html = std::get<1>(fm);
+
+        nodes.push_back(yaml::Node("html", html));
+        nodes.push_back(yaml::Node("__file_path", file));
+        content.push_back(nodes);
     }
 
-    std::vector<std::string> get_layout_files(const std::string& directory)
+    return content;
+}
+
+/**
+ * Reads the content of each file in `files` and returns an unordered map
+ * where the key is the layout name and the value is the layout content.
+ *
+ * @param files vector of strings containing full file paths
+ * @return unordered map of strings containing the layout name and layout content
+ */
+std::unordered_map<std::string, std::string> get_layouts(const std::vector<std::string>& files)
+{
+    std::unordered_map<std::string, std::string> layouts;
+
+    for (const std::string& file : files)
     {
-        return get_files(directory, ".html");
+        layouts[std::filesystem::path(file).filename().string()] = utils::read_file(file);
     }
 
+    return layouts;
+}
+
+namespace tobey
+{
+    /**
+     * Runs the Tobey static site generator.
+     *
+     * @param root_dir the root directory of the project
+     */
     void run(const std::string& root_dir)
     {
-        const auto dir_separator = std::string(1, std::filesystem::path::preferred_separator);
+        const auto dir_sep = std::string(1, std::filesystem::path::preferred_separator);
 
-        // compose content
-        const auto content_files = get_content_files(root_dir + dir_separator + "content");
-        std::vector<std::tuple<std::vector<yaml::Node>, std::string>> content;
+        // compose content into a vector of vectors of yaml::Node
+        const auto content_files = get_content_files(root_dir + dir_sep + "content");
+        const auto content = get_content(content_files);
 
-        for (const std::string& file : content_files)
-        {
-            const auto path = std::string(root_dir)
-                              .append(dir_separator)
-                              .append("content")
-                              .append(dir_separator)
-                              .append(file);
-
-            content.push_back(compose_content(read_file(path)));
-        }
-
-        // compose layout
-        const auto layout_files = get_layout_files(root_dir + dir_separator + "layouts");
-        std::unordered_map<std::string, std::string> layouts;
-
-        for (const std::string& file : layout_files)
-        {
-            const auto path = std::string(root_dir)
-                              .append(dir_separator)
-                              .append("layouts")
-                              .append(dir_separator)
-                              .append(file);
-
-            layouts[file] = read_file(path);
-        }
+        // compose layouts into an unordered map
+        const auto layout_files = get_layout_files(root_dir + dir_sep + "layouts");
+        const auto layouts = get_layouts(layout_files);
 
         // create output directory
-        const auto output_dir = std::string(root_dir)
-                                .append(dir_separator)
-                                .append("output");
-
-        if (!std::filesystem::exists(output_dir))
-        {
-            std::filesystem::create_directory(output_dir);
-        }
+        const auto output_dir = root_dir + dir_sep + "output";
 
         // write output
-        for (const auto& [nodes, html] : content)
+        for (const auto& nodes : content)
         {
             const auto layout = yaml::find_maybe_str(nodes, "layout");
             const auto slug = yaml::find_maybe_str(nodes, "slug");
 
             if (!layout)
             {
-                throw std::runtime_error("Layout not found in frontmatter");
+                throw std::runtime_error("\"layout\" not found in frontmatter");
             }
 
             if (!slug)
             {
-                throw std::runtime_error("Slug not found in frontmatter");
+                throw std::runtime_error("\"slug\" not found in frontmatter");
             }
 
             auto& output = layouts.at(*layout);
@@ -120,21 +170,44 @@ namespace tobey
                 data.set(key, value);
             }
 
-            // add html to data
-            data.set("content", html);
-
-            // set is_post to true
-            data.set("is_post", true);
-
             kainjow::mustache::mustache tmpl(output);
 
-            const auto output_path = std::string(output_dir)
-                .append(dir_separator)
-                .append(*slug)
-                .append(".html");
+            // add file path to data
+            const auto file_path = yaml::find_maybe_str(nodes, "__file_path");
 
+            if (!file_path)
+            {
+                throw std::runtime_error("\"__file_path\" not found in frontmatter");
+            }
+
+            // compose output path
+            const auto content_dir = root_dir + dir_sep + "content";
+            const auto relative_path = utils::str_replace(*file_path, content_dir, "");
+            auto relative_dir = std::filesystem::path(relative_path).parent_path().string();
+
+            // set dir to empty if root
+            if (relative_dir == "/")
+            {
+                relative_dir = "";
+            }
+
+            const auto output_path = std::string(output_dir)
+                                     .append(relative_dir)
+                                     .append(dir_sep)
+                                     .append(*slug)
+                                     .append(".html");
+
+            // create parent dir if needed
+            const auto parent_dir = std::filesystem::path(output_path).parent_path();
+
+            if (!std::filesystem::exists(parent_dir))
+            {
+                std::filesystem::create_directory(parent_dir);
+            }
+
+            // write to output
             std::cout << "Writing to " << output_path << std::endl;
-            write_file(output_path, tmpl.render(data));
+            utils::write_file(output_path, tmpl.render(data));
         }
     }
 }

@@ -5,6 +5,7 @@
 #include <variant>
 #include <vector>
 #include <sstream>
+#include <stack>
 
 namespace yaml {
     struct Node {
@@ -120,16 +121,25 @@ namespace yaml {
     }
 
     std::optional<Node> find_maybe_node(const std::vector<Node> &nodes, const std::string &key) {
-        for (const auto &node : nodes) {
-            if (node.key == key) {
-                return node;
-            }
+        std::stack<const std::vector<Node> *> stack;
+        stack.push(&nodes);
 
-            if (std::holds_alternative<std::vector<Node>>(node.value)) {
-                const auto &nested_nodes = std::get<std::vector<Node>>(node.value);
+        while(!stack.empty())
+        {
+            const auto *current_nodes = stack.top();
+            stack.pop();
 
-                if (const auto result = find_maybe_node(nested_nodes, key)) {
-                    return result;
+            for (const auto &node : *current_nodes) {
+                if (node.key == key) {
+                    return node;
+                }
+
+                if (std::holds_alternative<std::vector<Node>>(node.value)) {
+                    const auto &nested_nodes = std::get<std::vector<Node>>(node.value);
+
+                    if (!nested_nodes.empty()) {
+                        stack.push(&nested_nodes);
+                    }
                 }
             }
         }

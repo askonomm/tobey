@@ -3,6 +3,8 @@
 
 namespace tobey {
     void run(const std::string& root_dir);
+
+    [[noreturn]] void watch(const std::string& root_dir);
 }
 
 #endif //TOBEY_H

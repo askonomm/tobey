@@ -3,9 +3,9 @@
 #include <unordered_map>
 #include <iostream>
 #include <stack>
+#include <thread>
 
-#include "tobey.h"
-#include "utils.h"
+#include "utils.hpp"
 #include "../include/frontmatter/frontmatter.h"
 #include "../include/yaml/yaml.h"
 #include "../libs/inja.hpp"
@@ -348,6 +348,100 @@ namespace tobey
                 create_directories(std::filesystem::path(output_dir));
                 std::cout << "Writing to " << output_dir + "index.html" << std::endl;
                 utils::write_file(output_dir + "index.html", inja::render(output, data));
+            }
+        }
+    }
+
+    bool skip_watch_file(const std::string& root_dir, const std::filesystem::directory_entry& file)
+    {
+        // skip output directory
+        if (file.path().string().starts_with(root_dir + "/output"))
+        {
+            return true;
+        }
+
+        // skip dot files / directories
+        if (file.path().string().starts_with(root_dir + "/."))
+        {
+            return true;
+        }
+
+        // skip non files
+        if (!file.is_regular_file())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Watches for changes in the project directory and re-compiles the project.
+     *
+     * @param root_dir The root directory of the project
+     */
+    [[noreturn]] void watch(const std::string& root_dir)
+    {
+        std::cout << "Watching for changes..." << std::endl;
+        std::unordered_map<std::string, std::filesystem::file_time_type> files;
+
+        // create initial set of files
+        for (auto &file : std::filesystem::recursive_directory_iterator(root_dir))
+        {
+            if (skip_watch_file(root_dir, file)) continue;
+
+            const auto last_write_time = std::filesystem::last_write_time(file);
+            files[file.path().string()] = last_write_time;
+        }
+
+        // watch for changes
+        while(true)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+
+            // if file was deleted
+            for (auto it = files.begin(); it != files.end();)
+            {
+                if (!std::filesystem::exists(it->first))
+                {
+                    std::cout << "File deleted: " << it->first << std::endl;
+                    it = files.erase(it);
+                    run(root_dir);
+                }
+                else
+                {
+                    ++it;
+                }
+            }
+
+            for (auto &file : std::filesystem::recursive_directory_iterator(root_dir))
+            {
+                if (skip_watch_file(root_dir, file)) continue;
+
+                const auto last_write_time = std::filesystem::last_write_time(file);
+
+                // if the file exists in the map and the last write time is different
+                if (files.contains(file.path().string()))
+                {
+                    if (files[file.path().string()].time_since_epoch().count() == last_write_time.time_since_epoch().count())
+                    {
+                        continue;
+                    }
+
+                    std::cout << "File changed: " << file.path().string() << std::endl;
+                    files[file.path().string()] = last_write_time;
+                    run(root_dir);
+                    break;
+                }
+
+                // if the file does not exist in the map
+                if (!files.contains(file.path().string()))
+                {
+                    std::cout << "File added: " << file.path().string() << std::endl;
+                    files[file.path().string()] = last_write_time;
+                    run(root_dir);
+                    break;
+                }
             }
         }
     }

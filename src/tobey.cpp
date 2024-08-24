@@ -187,6 +187,13 @@ std::vector<std::vector<yaml::Node>> dsl_get_data(const yaml::Node& dsl_node, co
     return content_matched;
 }
 
+/**
+ *
+ * @param data The json data to attach the DSL data to
+ * @param data_node The DSL node from the frontmatter
+ * @param content Vector of vectors of yaml::Node containing all the data
+ * @return Updated json data with the DSL data attached
+ */
 inja::json attach_dsl_data(const inja::json& data, const yaml::Node& data_node, const std::vector<std::vector<yaml::Node>>& content)
 {
     const auto dsl_nodes = std::get<std::vector<yaml::Node>>(data_node.value);
@@ -316,7 +323,7 @@ namespace tobey
             // create parent dir if needed
             const auto parent_dir = std::filesystem::path(output_path).parent_path();
 
-            if (!exists(parent_dir))
+            if (!std::filesystem::exists(parent_dir))
             {
                 std::filesystem::create_directory(parent_dir);
             }

@@ -4,8 +4,7 @@
 #include "src/tobey.h"
 
 int main() {
-    //tobey::run(std::filesystem::current_path().string());
-    tobey::run("/home/asko/Code/faultd.com");
+    tobey::run(std::filesystem::current_path().string());
 
     return 0;
 }

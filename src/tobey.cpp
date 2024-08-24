@@ -83,7 +83,7 @@ std::vector<std::string> get_layout_files(const std::string& directory)
  * @param files vector of strings containing full file paths
  * @return vector of vectors of yaml::Node
  */
-std::vector<std::vector<yaml::Node>> get_content(const std::string &root_dir, const std::vector<std::string>& files)
+std::vector<std::vector<yaml::Node>> get_content(const std::string& root_dir, const std::vector<std::string>& files)
 {
     std::vector<std::vector<yaml::Node>> content;
 
@@ -142,7 +142,8 @@ std::unordered_map<std::string, std::string> get_layouts(const std::vector<std::
  * @param content Vector of vectors of yaml::Node containing all the data
  * @return
  */
-std::vector<std::vector<yaml::Node>> dsl_get_data(const yaml::Node& dsl_node, const std::vector<std::vector<yaml::Node>>& content)
+std::vector<std::vector<yaml::Node>> dsl_get_data(const yaml::Node& dsl_node,
+                                                  const std::vector<std::vector<yaml::Node>>& content)
 {
     std::vector<std::vector<yaml::Node>> content_matched;
     const auto dsl_node_nodes = std::get<std::vector<yaml::Node>>(dsl_node.value);
@@ -153,11 +154,11 @@ std::vector<std::vector<yaml::Node>> dsl_get_data(const yaml::Node& dsl_node, co
         const auto where_conditions = std::get<std::vector<yaml::Node>>((*where_node).value);
         const auto where_conditions_n = where_conditions.size();
 
-        for (const auto &nodes : content)
+        for (const auto& nodes : content)
         {
             auto conditions_matches = 0;
 
-            for (const auto &condition : where_conditions)
+            for (const auto& condition : where_conditions)
             {
                 const auto condition_value = std::get<std::string>(condition.value);
                 const auto node = yaml::find_maybe_node(nodes, condition.key);
@@ -194,7 +195,8 @@ std::vector<std::vector<yaml::Node>> dsl_get_data(const yaml::Node& dsl_node, co
  * @param content Vector of vectors of yaml::Node containing all the data
  * @return Updated json data with the DSL data attached
  */
-inja::json attach_dsl_data(const inja::json& data, const yaml::Node& data_node, const std::vector<std::vector<yaml::Node>>& content)
+inja::json attach_dsl_data(const inja::json& data, const yaml::Node& data_node,
+                           const std::vector<std::vector<yaml::Node>>& content)
 {
     const auto dsl_nodes = std::get<std::vector<yaml::Node>>(data_node.value);
     auto _data = data;
@@ -214,7 +216,7 @@ inja::json attach_dsl_data(const inja::json& data, const yaml::Node& data_node, 
         }
 
         // add all results to the data node
-        for(const auto& dsl_data_nodes : dsl_data_content)
+        for (const auto& dsl_data_nodes : dsl_data_content)
         {
             inja::json child_data;
 
@@ -252,8 +254,13 @@ namespace tobey
         const auto layout_files = get_layout_files(root_dir + dir_sep + "layouts");
         const auto layouts = get_layouts(layout_files);
 
-        // create output directory
-        const auto output_dir = root_dir + dir_sep + "output";
+        // delete output directory if it exists
+        const auto output_root_dir = root_dir + dir_sep + "output";
+
+        if (std::filesystem::exists(output_root_dir))
+        {
+            std::filesystem::remove_all(output_root_dir);
+        }
 
         // write output
         for (const auto& nodes : content)
@@ -314,23 +321,34 @@ namespace tobey
                 relative_dir = "";
             }
 
-            const auto output_path = std::string(output_dir)
-                                     .append(relative_dir)
-                                     .append(dir_sep)
-                                     .append(*slug)
-                                     .append(".html");
-
-            // create parent dir if needed
-            const auto parent_dir = std::filesystem::path(output_path).parent_path();
-
-            if (!std::filesystem::exists(parent_dir))
+            // If the slug has a dot in it, we don't want to use it as a directory,
+            // so that we could allow for root level files to be created, as well as
+            // things like XML feeds, etc.
+            if (std::string(*slug).find('.') != std::string::npos)
             {
-                std::filesystem::create_directory(parent_dir);
-            }
+                const std::string output_dir = std::string(output_root_dir)
+                                               .append(relative_dir)
+                                               .append(dir_sep)
+                                               .append(*slug);
 
-            // write to output
-            std::cout << "Writing to " << output_path << std::endl;
-            utils::write_file(output_path, inja::render(output, data));
+                const auto output_dir_parent = std::filesystem::path(output_dir).parent_path().string();
+                create_directories(std::filesystem::path(output_dir_parent));
+                std::cout << "Writing to " << output_dir << std::endl;
+                utils::write_file(output_dir, inja::render(output, data));
+            }
+            // otherwise slug is a directory that we create an index.html in.
+            else
+            {
+                const std::string output_dir = std::string(output_root_dir)
+                                               .append(relative_dir)
+                                               .append(dir_sep)
+                                               .append(*slug)
+                                               .append(dir_sep);
+
+                create_directories(std::filesystem::path(output_dir));
+                std::cout << "Writing to " << output_dir + "index.html" << std::endl;
+                utils::write_file(output_dir + "index.html", inja::render(output, data));
+            }
         }
     }
 }

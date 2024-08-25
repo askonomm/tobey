@@ -95,6 +95,11 @@ jobs:
           pattern: tobey
           merge-multiple: false
 
+      - name: Unzip artifact
+        run: |
+          unzip tobey/tobey -d tobey
+          ls -lh
+
 #      - name: Download Windows build artifact
 #        uses: actions/download-artifact@v4
 #        with:

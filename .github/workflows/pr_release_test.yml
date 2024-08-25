@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-linux:
-    name: Build on Linux
+    name: Build on Linux (x86)
     runs-on: ubuntu-latest
 
     steps:
@@ -47,7 +47,7 @@ jobs:
           name: linux_x86.zip
           path: build/linux_x86.zip
 
-  build-windows:
+  build-windows-x86:
     name: Build on Windows (x86)
     runs-on: windows-latest
 
@@ -77,10 +77,48 @@ jobs:
       - name: Zip build/tobey.exe
         run: |
           cd build
-          zip -r win_x86.zip tobey.exe
+          Compress-Archive -Path tobey.exe -DestinationPath win_x86.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: win_x86.zip
           path: build/win_x86.zip
+
+  build-windows-x64:
+    name: Build on Windows (x64)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: 3.30.2
+
+      - name: Create Build Directory
+        run: mkdir build
+
+      - name: Set up MSVC
+        uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+          arch: win64
+
+      - name: Build with CMake
+        run: |
+          cd build
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/O2 /EHsc /DNDEBUG" -DCMAKE_C_FLAGS="/O2 /EHsc /DNDEBUG" -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF ..
+          cmake --build .
+
+      - name: Zip build/tobey.exe
+        run: |
+          cd build
+          Compress-Archive -Path tobey.exe -DestinationPath win_x64.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: win_x64.zip
+          path: build/win_x64.zip

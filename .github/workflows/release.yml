@@ -45,42 +45,42 @@ jobs:
           name: tobey
           path: build/tobey
 
-#  build-windows:
-#    name: Build on Windows
-#    runs-on: windows-latest
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#
-#      - name: Set up CMake
-#        uses: jwlawson/actions-setup-cmake@v2
-#        with:
-#          cmake-version: 3.30.2
-#
-#      - name: Create Build Directory
-#        run: mkdir build
-#
-#      - name: Set up Ninja
-#        uses: seanmiddleditch/gha-setup-ninja@master
-#
-#      - name: Build with CMake
-#        shell: bash
-#        run: |
-#          cd build
-#          cmake -G Ninja \
-#            -DCMAKE-BUILD-TYPE=Release \
-#            -DCMAKE_CXX_FLAGS="-Os -s" \
-#            -DCMAKE_C_FLAGS="-Os -s" \
-#            -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF \
-#            ..
-#          cmake --build .
-#
-#      - name: Upload artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: tobey.exe
-#          path: build/Tobey.exe
+  build-windows:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: 3.30.2
+
+      - name: Create Build Directory
+        run: mkdir build
+
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Build with CMake
+        shell: bash
+        run: |
+          cd build
+          cmake -G Ninja \
+            -DCMAKE-BUILD-TYPE=Release \
+            -DCMAKE_CXX_FLAGS="-Os -s" \
+            -DCMAKE_C_FLAGS="-Os -s" \
+            -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF \
+            ..
+          cmake --build .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tobey.exe
+          path: build/tobey.exe
 
   release:
     name: Create GitHub Release
@@ -100,12 +100,12 @@ jobs:
           mv tobey-dir/tobey ./tobey
           ls -lh
 
-#      - name: Download Windows build artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: tobey.exe
-#          pattern: tobey*
-#          merge-multiple: false
+      - name: Download Windows build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tobey.exe
+          pattern: tobey*
+          merge-multiple: false
 
       - name: Create GitHub Release
         id: create_release

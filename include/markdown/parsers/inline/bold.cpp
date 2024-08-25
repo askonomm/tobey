@@ -1,5 +1,7 @@
-#include "bold.hpp"
 #include <regex>
+
+#include "bold.hpp"
+#include "../../utils.hpp"
 
 namespace bold {
   std::vector<std::string> inline_parser::matches(const std::string &block) const {
@@ -10,7 +12,11 @@ namespace bold {
 
     for (std::sregex_iterator i = matches_begin; i != matches_end; ++i) {
       const std::smatch& match = *i;
-      matches.push_back(match.str());
+
+      if (const size_t match_start = match.position(0); !is_inside_backticks(block, match_start))
+      {
+        matches.push_back(match.str(0));;
+      }
     }
 
     return matches;

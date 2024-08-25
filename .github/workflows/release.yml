@@ -96,7 +96,8 @@ jobs:
 
       - name: Unzip artifact
         run: |
-          mv tobey/tobey ./tobey
+          mv tobey tobey-dir
+          mv tobey-dir/tobey ./tobey
           ls -lh
 
 #      - name: Download Windows build artifact

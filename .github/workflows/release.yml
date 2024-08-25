@@ -137,7 +137,6 @@ jobs:
 
       - name: Zip Windows build artifact (x86)
         run: |
-          mv win_x86/tobey.exe .
           zip -r win_x86.zip tobey.exe
 
       - name: Download Windows build artifact (x64)
@@ -149,7 +148,6 @@ jobs:
 
       - name: Zip Windows build artifact (x64)
         run: |
-          mv win_x64/tobey.exe .
           zip -r win_x64.zip tobey.exe
 
       - name: Debug

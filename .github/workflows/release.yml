@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tobey
-          path: build/tobey/tobey
+          path: build/tobey
 
 #  build-windows:
 #    name: Build on Windows
@@ -96,7 +96,7 @@ jobs:
           merge-multiple: false
 
       - name: Tar Linux build artifact
-        run: tar -czvf tobey.tar.gz tobey
+        run: tar -czvf tobey.tar.gz tobey/tobey
 
 #      - name: Download Windows build artifact
 #        uses: actions/download-artifact@v4

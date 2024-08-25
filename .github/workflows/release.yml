@@ -92,11 +92,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: tobey
-          pattern: tobey*
+          pattern: tobey
           merge-multiple: false
-
-      - name: Tar Linux build artifact
-        run: tar -czvf tobey.tar.gz tobey/tobey
 
 #      - name: Download Windows build artifact
 #        uses: actions/download-artifact@v4

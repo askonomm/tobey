@@ -60,6 +60,8 @@ jobs:
 
       - name: Set up MSVC
         uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+          arch: win32
 
       - name: Build with CMake
         run: |

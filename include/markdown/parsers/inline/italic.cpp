@@ -15,9 +15,8 @@ namespace italic
         for (std::sregex_iterator i = matches_begin; i != matches_end; ++i)
         {
             const std::smatch& match = *i;
-            size_t match_start = match.position(0);
 
-            if (!is_inside_backticks(block, match_start))
+            if (const size_t match_start = match.position(0); !is_inside_backticks(block, match_start))
             {
                 matches.push_back(match.str(0));;
             }

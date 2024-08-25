@@ -105,6 +105,22 @@ sort:
 
 This will sort the data by `key` in ascending order. The `order` key can be either `asc` or `desc`.
 
+---
+
+**Note:** All the keys used in the DSL for data mapping are exactly the same as the keys in the YAML section of the FrontMatter files, except special keys like `__directory` and `__file_path`, which are added by Tobey automatically. 
+
+This means that you can use the `__directory` to filter data by the directory the content file is in, and `__file_path` to filter data by the file path of the content file, for example:
+
+```yaml
+data:
+  posts:
+    where:
+      __directory: posts
+    sort:
+      by: date
+      order: desc
+```
+
 ## Templating
 
 Tobey uses [inja]() for templating. Templates are placed in the `layouts` folder, and can be in any file format, whether that is an XML file or HTML file, it doesn't matter. 

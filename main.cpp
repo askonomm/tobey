@@ -2,7 +2,7 @@
 
 #include "src/tobey.hpp"
 
-int main(int argc, char * argv[]) {
+int main(const int argc, char * argv[]) {
     tobey::run(std::filesystem::current_path().string());
 
     if (argc > 1 && std::string(argv[1]) == "--watch")

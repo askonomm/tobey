@@ -1,3 +1,4 @@
+#include <utility>
 #include <vector>
 #include <filesystem>
 #include <unordered_map>
@@ -135,6 +136,103 @@ std::unordered_map<std::string, std::string> get_layouts(const std::vector<std::
 }
 
 /**
+ * Filters the content based on the `where` clause in the DSL node.
+ *
+ * @param dsl_node The entire DSL node `where` from the frontmatter
+ * @param content Vector of vectors of yaml::Node containing all the data
+ * @return Vector of vectors of yaml::Node containing the data that matches the `where` clause
+ */
+std::vector<std::vector<yaml::Node>> dsl_where_clause(const yaml::Node& dsl_node,
+                                                      const std::vector<std::vector<yaml::Node>>& content)
+{
+    auto _content_filtered = content;
+    const auto where_conditions = std::get<std::vector<yaml::Node>>(dsl_node.value);
+    const auto where_conditions_n = where_conditions.size();
+
+    // for loop with index
+    auto index = 0;
+
+    for (const auto& nodes : _content_filtered)
+    {
+        auto conditions_left_to_match = where_conditions_n;
+
+        for (const auto& condition : where_conditions)
+        {
+            const auto condition_value = std::get<std::string>(condition.value);
+            const auto node = yaml::find_maybe_node(nodes, condition.key);
+
+            // could not find node matching condition.key,
+            // and thus cannot match the condition
+            if (!node)
+            {
+                continue;
+            }
+
+            // found a matching node, now check if the value matches
+            // TODO: check that the value is a string
+            if (std::get<std::string>(node->value) == condition_value)
+            {
+                conditions_left_to_match--;
+            }
+        }
+
+        // if all conditions are not met, remove the item at index
+        if (conditions_left_to_match != 0)
+        {
+            _content_filtered.erase(_content_filtered.begin() + index);
+        }
+
+        index++;
+    }
+
+    return _content_filtered;
+}
+
+/**
+ * Sorts the content based on the `sort` clause in the DSL node.
+ *
+ * @param dsl_node The entire DSL node `sort` from the frontmatter
+ * @param content Vector of vectors of yaml::Node containing all the data
+ * @return Vector of vectors of yaml::Node containing the data sorted by the `sort` clause
+ */
+std::vector<std::vector<yaml::Node>> dsl_sort_clause(const yaml::Node& dsl_node,
+                                                     const std::vector<std::vector<yaml::Node>>& content)
+{
+    auto _content_filtered = content;
+    const auto sort_child_nodes = std::get<std::vector<yaml::Node>>(dsl_node.value);
+    const auto sort_by = yaml::find_maybe_str(sort_child_nodes, "by");
+    const auto sort_order = yaml::find_maybe_str(sort_child_nodes, "order");
+
+    if (sort_by && sort_order)
+    {
+        std::ranges::sort(_content_filtered, [sort_by, sort_order](auto& a, auto& b)
+        {
+            const auto a_node = yaml::find_maybe_str(a, *sort_by);
+            const auto b_node = yaml::find_maybe_str(b, *sort_by);
+
+            if (!a_node || !b_node)
+            {
+                return false;
+            }
+
+            if (*sort_order == "asc")
+            {
+                return *a_node < *b_node;
+            }
+
+            if (*sort_order == "desc")
+            {
+                return *a_node > *b_node;
+            }
+
+            return false;
+        });
+    }
+
+    return _content_filtered;
+}
+
+/**
  * Returns a vector of yaml::Node containing the data from `dsl_node` that
  * matches the data in `nodes`.
  *
@@ -145,47 +243,22 @@ std::unordered_map<std::string, std::string> get_layouts(const std::vector<std::
 std::vector<std::vector<yaml::Node>> dsl_get_data(const yaml::Node& dsl_node,
                                                   const std::vector<std::vector<yaml::Node>>& content)
 {
-    std::vector<std::vector<yaml::Node>> content_matched;
+    std::vector<std::vector<yaml::Node>> content_filtered = content;
     const auto dsl_node_nodes = std::get<std::vector<yaml::Node>>(dsl_node.value);
 
     // where clause
     if (const auto where_node = yaml::find_maybe_node(dsl_node_nodes, "where"))
     {
-        const auto where_conditions = std::get<std::vector<yaml::Node>>((*where_node).value);
-        const auto where_conditions_n = where_conditions.size();
-
-        for (const auto& nodes : content)
-        {
-            auto conditions_matches = 0;
-
-            for (const auto& condition : where_conditions)
-            {
-                const auto condition_value = std::get<std::string>(condition.value);
-                const auto node = yaml::find_maybe_node(nodes, condition.key);
-
-                // could not find node matching condition.key,
-                // and thus cannot match the condition
-                if (!node)
-                {
-                    continue;
-                }
-
-                // found a matching node, now check if the value matches
-                // TODO: check that the value is a string
-                if (std::get<std::string>((*node).value) == condition_value)
-                {
-                    conditions_matches++;
-                }
-            }
-
-            if (conditions_matches == where_conditions_n)
-            {
-                content_matched.push_back(nodes);
-            }
-        }
+        content_filtered = dsl_where_clause(*where_node, content_filtered);
     }
 
-    return content_matched;
+    // sort clause
+    if (const auto sort_node = yaml::find_maybe_node(dsl_node_nodes, "sort"))
+    {
+        content_filtered = dsl_sort_clause(*sort_node, content_filtered);
+    }
+
+    return content_filtered;
 }
 
 /**
@@ -386,7 +459,7 @@ namespace tobey
         std::unordered_map<std::string, std::filesystem::file_time_type> files;
 
         // create initial set of files
-        for (auto &file : std::filesystem::recursive_directory_iterator(root_dir))
+        for (auto& file : std::filesystem::recursive_directory_iterator(root_dir))
         {
             if (skip_watch_file(root_dir, file)) continue;
 
@@ -395,7 +468,7 @@ namespace tobey
         }
 
         // watch for changes
-        while(true)
+        while (true)
         {
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -414,7 +487,7 @@ namespace tobey
                 }
             }
 
-            for (auto &file : std::filesystem::recursive_directory_iterator(root_dir))
+            for (auto& file : std::filesystem::recursive_directory_iterator(root_dir))
             {
                 if (skip_watch_file(root_dir, file)) continue;
 
@@ -423,7 +496,8 @@ namespace tobey
                 // if the file exists in the map and the last write time is different
                 if (files.contains(file.path().string()))
                 {
-                    if (files[file.path().string()].time_since_epoch().count() == last_write_time.time_since_epoch().count())
+                    if (files[file.path().string()].time_since_epoch().count() == last_write_time.time_since_epoch().
+                        count())
                     {
                         continue;
                     }

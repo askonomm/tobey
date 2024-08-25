@@ -13,23 +13,7 @@ creating data for the inja templates.
 
 ## Installation
 
-To install Tobey, simply download the latest executable:
-
-```bash
-wget https://github.com/askonomm/tobey/releases/download/v0.2.5/tobey
-```
-
-Then, make the file executable:
-
-```bash
-chmod +x tobey
-```
-
-And finally, move the file to a directory in your PATH:
-
-```bash
-sudo mv tobey /usr/local/bin
-```
+To install Tobey, simply download the latest release from the [releases page](https://github.com/askonomm/tobey/releases). More convenient installation methods will be added in the future.
 
 ## Usage
 

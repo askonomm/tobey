@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tobey
-          path: build/tobey
+          path: build/tobey/tobey
 
 #  build-windows:
 #    name: Build on Windows

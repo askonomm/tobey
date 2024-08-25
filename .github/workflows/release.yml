@@ -91,14 +91,13 @@ jobs:
       - name: Download Linux build artifact
         uses: actions/download-artifact@v4
         with:
-          path: tobey
           pattern: tobey
           merge-multiple: false
 
       - name: Unzip artifact
         run: |
           ls -lh
-          cd tobey/tobey
+          cd tobey
           ls -lh
           unzip tobey.zip
           ls -lh

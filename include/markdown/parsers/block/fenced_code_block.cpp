@@ -11,8 +11,8 @@ namespace fenced_code_block {
     const std::string language = str_trim(first_line.substr(3));
 
     // length of first line
-    const size_t r_a = first_line.size() + 2; // 2 accounts for line break
-    constexpr size_t r_z = 3 + 2;                 // 2 accounts for line break
+    const size_t r_a = first_line.size() + 1; // 2 accounts for line break
+    constexpr size_t r_z = 3 + 1;                 // 2 accounts for line break
     const std::string code = block.substr(r_a, block.size() - r_a - r_z);
 
     if (!language.empty()) {

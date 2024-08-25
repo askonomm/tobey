@@ -66,12 +66,7 @@ jobs:
       - name: Build with CMake
         run: |
           cd build
-          cmake -G "Ninja" `
-            -DCMAKE_BUILD_TYPE=Release `
-            -DCMAKE_CXX_FLAGS="/O2 /DNDEBUG" `
-            -DCMAKE_C_FLAGS="/O2 /DNDEBUG" `
-            -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF `
-            ..
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/O2 /EHsc /DNDEBUG" -DCMAKE_C_FLAGS="/O2 /EHsc /DNDEBUG" -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF ..
           cmake --build .
 
       - name: Upload artifact

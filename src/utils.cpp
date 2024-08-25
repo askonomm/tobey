@@ -1,4 +1,3 @@
-#include "../include/markdown/utils.hpp"
 #include <fstream>
 #include <string>
 #include <vector>
@@ -6,11 +5,13 @@
 
 namespace utils
 {
-    std::string read_file(const std::string &filename) {
+    std::string read_file(const std::string& filename)
+    {
         std::ifstream file(filename, std::ios::binary);
         std::string contents;
 
-        if (file) {
+        if (file)
+        {
             file.seekg(0, std::ios::end);
             const std::streampos length = file.tellg();
             file.seekg(0, std::ios::beg);
@@ -24,13 +25,15 @@ namespace utils
         return contents;
     }
 
-    void write_file(const std::string &output_path, const std::string &output) {
+    void write_file(const std::string& output_path, const std::string& output)
+    {
         std::ofstream outfile(output_path);
         outfile << output << std::endl;
         outfile.close();
     }
 
-    std::string str_replace(const std::string &subject, const std::string &search, const std::string &replace) {
+    std::string str_replace(const std::string& subject, const std::string& search, const std::string& replace)
+    {
         size_t pos = subject.find(search);
         std::string mutable_subject = subject;
 

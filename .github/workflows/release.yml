@@ -100,12 +100,12 @@ jobs:
           mv tobey-dir/tobey ./tobey
           ls -lh
 
-      - name: Download Windows build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: tobey.exe
-          pattern: tobey*
-          merge-multiple: false
+#      - name: Download Windows build artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: tobey.exe
+#          pattern: tobey*
+#          merge-multiple: false
 
       - name: Create GitHub Release
         id: create_release

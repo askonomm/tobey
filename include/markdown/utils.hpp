@@ -19,4 +19,6 @@ std::string str_replace(const std::string &s, const std::string &match, const st
 
 std::string inline_parse(const std::vector<std::unique_ptr<inline_parser_interface>> &parsers, const std::string& text);
 
+bool is_inside_backticks(const std::string& match, const size_t match_start);
+
 #endif

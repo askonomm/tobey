@@ -73,3 +73,18 @@ std::string inline_parse(const std::vector<std::unique_ptr<inline_parser_interfa
 
     return result;
 }
+
+bool is_inside_backticks(const std::string& match, const size_t match_start)
+{
+    size_t backtick_count = 0;
+
+    for(size_t i = 0; i < match_start; i++)
+    {
+        if(match[i] == '`')
+        {
+            backtick_count++;
+        }
+    }
+
+    return (backtick_count %2) != 0;
+}

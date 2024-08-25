@@ -1,5 +1,7 @@
-#include "italic.hpp"
 #include <regex>
+
+#include "italic.hpp"
+#include "../../utils.hpp"
 
 namespace italic {
   std::vector<std::string> inline_parser::matches(const std::string &block) const {
@@ -10,7 +12,12 @@ namespace italic {
 
     for (std::sregex_iterator i = matches_begin; i != matches_end; ++i) {
       const std::smatch& match = *i;
-      matches.push_back(match.str());
+      size_t match_start = match.position(0);
+
+      if(!is_inside_backticks(block, match_start))
+      {
+        matches.push_back(match.str(0));;
+      }
     }
 
     return matches;

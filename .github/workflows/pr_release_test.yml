@@ -36,14 +36,19 @@ jobs:
             ..
           cmake --build .
 
+      - name: Zip build/tobey
+        run: |
+          cd build
+          zip -r linux_x86.zip tobey
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tobey
-          path: build/tobey
+          name: linux_x86.zip
+          path: build/linux_x86.zip
 
   build-windows:
-    name: Build on Windows
+    name: Build on Windows (x86)
     runs-on: windows-latest
 
     steps:
@@ -69,8 +74,13 @@ jobs:
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="/O2 /EHsc /DNDEBUG" -DCMAKE_C_FLAGS="/O2 /EHsc /DNDEBUG" -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF ..
           cmake --build .
 
+      - name: Zip build/tobey.exe
+        run: |
+          cd build
+          zip -r win_x86.zip tobey.exe
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tobey.exe
-          path: build/tobey.exe
+          name: win_x86.zip
+          path: build/win_x86.zip

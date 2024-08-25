@@ -123,6 +123,11 @@ jobs:
           pattern: linux_x86
           merge-multiple: false
 
+      - name: Zip Linux build artifact
+        run: |
+          mv linux_x86/tobey .
+          zip -r linux_x86.zip tobey
+
       - name: Download Windows build artifact (x86)
         uses: actions/download-artifact@v4
         with:
@@ -130,12 +135,22 @@ jobs:
           pattern: win_x86
           merge-multiple: false
 
+      - name: Zip Windows build artifact (x86)
+        run: |
+          mv win_x86/tobey.exe .
+          zip -r win_x86.zip tobey.exe
+
       - name: Download Windows build artifact (x64)
         uses: actions/download-artifact@v4
         with:
           name: win_x64
           pattern: win_x64
           merge-multiple: false
+
+      - name: Zip Windows build artifact (x64)
+        run: |
+          mv win_x64/tobey.exe .
+          zip -r win_x64.zip tobey.exe
 
       - name: Debug
         run: ls -lh
@@ -147,4 +162,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           make_latest: true
-          files: "linux_x86,win_x86,win_x64"
+          files: "linux_x86.zip, win_x86.zip, win_x64.zip"

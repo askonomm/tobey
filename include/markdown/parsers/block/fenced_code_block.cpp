@@ -13,7 +13,17 @@ namespace fenced_code_block {
     // length of first line
     const size_t r_a = first_line.size() + 1; // 2 accounts for line break
     constexpr size_t r_z = 3 + 1;                 // 2 accounts for line break
-    const std::string code = block.substr(r_a, block.size() - r_a - r_z);
+    std::string code = block.substr(r_a, block.size() - r_a - r_z);
+
+    // make code safe for HTML output
+    code = str_replace(code, "&", "&amp;");
+    code = str_replace(code, "<", "&lt;");
+    code = str_replace(code, ">", "&gt;");
+    code = str_replace(code, "\"", "&quot;");
+    code = str_replace(code, "'", "&apos;");
+    code = str_replace(code, "\n", "<br>");
+    code = str_replace(code, "\t", "    ");
+    code = str_replace(code, " ", "&nbsp;");
 
     if (!language.empty()) {
       return "<pre><code class=\"" + language + "\">" + code + "</code></pre>";

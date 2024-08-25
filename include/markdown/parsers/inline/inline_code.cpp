@@ -1,4 +1,4 @@
-#include "inline_code.h"
+#include "inline_code.hpp"
 #include <regex>
 
 namespace inline_code {

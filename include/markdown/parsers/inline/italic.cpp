@@ -1,4 +1,4 @@
-#include "italic.h"
+#include "italic.hpp"
 #include <regex>
 
 namespace italic {

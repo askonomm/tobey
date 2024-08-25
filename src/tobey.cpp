@@ -6,7 +6,7 @@
 #include <thread>
 
 #include "utils.hpp"
-#include "../include/frontmatter/frontmatter.h"
+#include "../include/frontmatter/frontmatter.hpp"
 #include "../include/yaml/yaml.h"
 #include "../libs/inja.hpp"
 

@@ -1,7 +1,7 @@
 #ifndef STRIKETHROUGH_PARSER_H
 #define STRIKETHROUGH_PARSER_H
 
-#include "../../inline_parser_interface.h"
+#include "../../inline_parser_interface.hpp"
 #include <string>
 
 namespace strikethrough {

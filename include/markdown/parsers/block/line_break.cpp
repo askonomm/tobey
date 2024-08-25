@@ -1,4 +1,4 @@
-#include "line_break.h"
+#include "line_break.hpp"
 #include <algorithm>
 
 static int count_chars(const std::string &str) {

@@ -1,5 +1,5 @@
-#include "fenced_code_block.h"
-#include "../../utils.h"
+#include "fenced_code_block.hpp"
+#include "../../utils.hpp"
 
 namespace fenced_code_block {
   bool block_parser::identifier(const std::string &block) const {

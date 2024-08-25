@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "inline_parser_interface.h"
+#include "inline_parser_interface.hpp"
 
 std::string str_trim(const std::string &s);
 

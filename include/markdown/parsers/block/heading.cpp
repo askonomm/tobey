@@ -1,4 +1,4 @@
-#include "heading.h"
+#include "heading.hpp"
 #include <regex>
 
 namespace heading_block {

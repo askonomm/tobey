@@ -5,8 +5,8 @@
 #include <variant>
 
 #include "../yaml/yaml.h"
-#include "../markdown/markdown.h"
-#include "../markdown/utils.h"
+#include "../markdown/markdown.hpp"
+#include "../markdown/utils.hpp"
 
 namespace frontmatter {
     std::tuple<std::vector<yaml::Node>, std::string> parse(const std::string &input) {

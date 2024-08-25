@@ -1,7 +1,7 @@
 #ifndef MARKDOWN_H
 #define MARKDOWN_H
 
-#include "block_parser_interface.h"
+#include "block_parser_interface.hpp"
 #include <string>
 #include <vector>
 #include <memory>

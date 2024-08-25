@@ -1,4 +1,4 @@
-#include "image_link.h"
+#include "image_link.hpp"
 #include <regex>
 
 namespace image_link {

@@ -1,4 +1,4 @@
-#include "bold.h"
+#include "bold.hpp"
 #include <regex>
 
 namespace bold {

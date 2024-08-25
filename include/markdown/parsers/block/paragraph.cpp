@@ -1,10 +1,10 @@
-#include "paragraph.h"
-#include "../../utils.h"
-#include "../inline/bold.h"
-#include "../inline/image_link.h"
-#include "../inline/inline_code.h"
-#include "../inline/italic.h"
-#include "../inline/strikethrough.h"
+#include "paragraph.hpp"
+#include "../../utils.hpp"
+#include "../inline/bold.hpp"
+#include "../inline/image_link.hpp"
+#include "../inline/inline_code.hpp"
+#include "../inline/italic.hpp"
+#include "../inline/strikethrough.hpp"
 #include <regex>
 
 namespace paragraph_block {

@@ -1,4 +1,4 @@
-#include "strikethrough.h"
+#include "strikethrough.hpp"
 #include <regex>
 
 namespace strikethrough {

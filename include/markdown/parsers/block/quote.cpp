@@ -1,6 +1,6 @@
-#include "quote.h"
-#include "../../utils.h"
-#include "../inline/bold.h"
+#include "quote.hpp"
+#include "../../utils.hpp"
+#include "../inline/bold.hpp"
 #include <string>
 #include <vector>
 

@@ -44,7 +44,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: linux_x86.zip
+          name: linux_x86
           path: build/linux_x86.zip
 
   build-windows-x86:
@@ -82,7 +82,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: win_x86.zip
+          name: win_x86
           path: build/win_x86.zip
 
   build-windows-x64:
@@ -120,5 +120,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: win_x64.zip
+          name: win_x64
           path: build/win_x64.zip

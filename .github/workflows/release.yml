@@ -137,6 +137,9 @@ jobs:
           pattern: win_x64
           merge-multiple: false
 
+      - name: Debug
+        run: ls -lh
+
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v2
@@ -144,4 +147,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           make_latest: true
-          files: "*"
+          files: "linux_x86,win_x86,win_x64"

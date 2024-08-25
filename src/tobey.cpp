@@ -145,45 +145,26 @@ std::unordered_map<std::string, std::string> get_layouts(const std::vector<std::
 std::vector<std::vector<yaml::Node>> dsl_where_clause(const yaml::Node& dsl_node,
                                                       const std::vector<std::vector<yaml::Node>>& content)
 {
-    auto _content_filtered = content;
-    const auto where_conditions = std::get<std::vector<yaml::Node>>(dsl_node.value);
-    const auto where_conditions_n = where_conditions.size();
+    const auto& where_conditions = std::get<std::vector<yaml::Node>>(dsl_node.value);
 
-    // for loop with index
-    auto index = 0;
-
-    for (const auto& nodes : _content_filtered)
+    auto matches_conditions = [&](const std::vector<yaml::Node>& nodes)
     {
-        auto conditions_left_to_match = where_conditions_n;
-
         for (const auto& condition : where_conditions)
         {
             const auto condition_value = std::get<std::string>(condition.value);
-            const auto node = yaml::find_maybe_node(nodes, condition.key);
+            const auto node = yaml::find_maybe_str(nodes, condition.key);
 
-            // could not find node matching condition.key,
-            // and thus cannot match the condition
-            if (!node)
+            if (!node || *node != condition_value)
             {
-                continue;
-            }
-
-            // found a matching node, now check if the value matches
-            // TODO: check that the value is a string
-            if (std::get<std::string>(node->value) == condition_value)
-            {
-                conditions_left_to_match--;
+                return false;
             }
         }
 
-        // if all conditions are not met, remove the item at index
-        if (conditions_left_to_match != 0)
-        {
-            _content_filtered.erase(_content_filtered.begin() + index);
-        }
+        return true;
+    };
 
-        index++;
-    }
+    std::vector<std::vector<yaml::Node>> _content_filtered;
+    std::ranges::copy_if(content, std::back_inserter(_content_filtered), matches_conditions);
 
     return _content_filtered;
 }

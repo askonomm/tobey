@@ -98,7 +98,7 @@ jobs:
       - name: Unzip artifact
         run: |
           ls -lh
-          cd tobey
+          cd tobey/tobey
           ls -lh
           unzip tobey.zip
           ls -lh

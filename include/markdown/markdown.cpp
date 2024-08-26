@@ -123,13 +123,24 @@ namespace markdown
 
         for (const auto& block : stitched_blocks)
         {
+            auto found_parser = false;
+
             for (const auto& parser : block_parsers)
             {
                 if (const std::string trimmed_block = str_trim(block); parser->identifier(trimmed_block))
                 {
+                    found_parser = true;
                     parsed_blocks.push_back(parser->parser(trimmed_block));
                     break;
                 }
+            }
+
+            // sometimes no parser matched, in which case we'll use the paragraph parser
+            // as a fallback.
+            if (!found_parser)
+            {
+                const auto paragraph_parser = std::make_unique<paragraph_block::block_parser>();
+                parsed_blocks.push_back(paragraph_parser->parser(str_trim(block)));
             }
         }
 

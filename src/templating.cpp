@@ -4,6 +4,11 @@
 #include "../libs/inja.hpp"
 
 namespace templating {
+/**
+ *
+ * @param args The arguments to the function
+ * @return The formatted date
+ */
 std::string format_date(const inja::Arguments &args) {
   const auto date = args.at(0)->get<std::string>();
   const auto date_format = args.at(1)->get<std::string>();

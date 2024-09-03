@@ -3,5 +3,5 @@
 #include "../libs/inja.hpp"
 
 namespace templating {
-  std::string format_date(const inja::Arguments& args);
+std::string format_date(const inja::Arguments &args);
 }

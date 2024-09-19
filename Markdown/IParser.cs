@@ -1,6 +1,6 @@
-﻿namespace Markdown.Html;
+﻿namespace Markdown;
 
-public interface IParser
+public interface IParser<out T>
 {
-    
+    public T Parse(List<Block> blocks);
 }

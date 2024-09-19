@@ -4,11 +4,12 @@ public class HorizontalLine : IBlockIdentifier
 {
     public string Name => "horizontal_line";
     
-    public bool Identifies(string block)
+    public bool Identifies(int currentBlock, string[] blocks)
     {
-        var isDash = block.Trim().All(c => c == '-');
-        var isAsterisk = block.Trim().All(c => c == '*');
-        var isUnderscore = block.Trim().All(c => c == '_');
+        var content = blocks.ElementAt(currentBlock);
+        var isDash = content.All(c => c == '-');
+        var isAsterisk = content.All(c => c == '*');
+        var isUnderscore = content.All(c => c == '_');
         
         return isDash || isAsterisk || isUnderscore;
     }

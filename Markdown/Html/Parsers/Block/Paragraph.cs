@@ -8,8 +8,8 @@ public class Paragraph : IBlockParser
     {
         return new List<IInlineParser>
         {
-            new BoldParser(),
-            new ItalicParser(),
+            new Bold(),
+            new Italic(),
         };
     }
     

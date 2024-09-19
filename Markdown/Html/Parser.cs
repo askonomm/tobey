@@ -9,9 +9,21 @@ public class Parser : IParser<string>
         var blockParsers = new List<(string, IBlockParser)> {
             ("heading", new Parsers.Block.Heading()),
             ("horizontal_line", new Parsers.Block.HorizontalLine()),
-            ("paragraph", new Parsers.Block.Paragraph())
+            ("paragraph", new Parsers.Block.Paragraph()),
+            ("code", new Parsers.Block.Code())
         };
-        
+
+        // Stitch blocks
+        // TODO: make it configurable
+        var blockStitchers = new List<IBlockStitcher> {
+            new Stitchers.Code()
+        };
+
+        foreach (var stitcher in blockStitchers)
+        {
+            blocks = stitcher.Stitch(blocks);
+        }
+
         // Parse blocks
         var html = "";
         

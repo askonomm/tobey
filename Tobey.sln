@@ -2,6 +2,14 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobey", "Tobey\Tobey.csproj", "{11225780-2356-4F1A-B6E9-E36C98E97D6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Markdown", "Markdown\Markdown.csproj", "{FB5000DF-BA92-42E6-8B24-A9E8E5B30C47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAML", "YAML\YAML.csproj", "{B5F8BF38-D84F-4310-A723-41A2E2881575}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontMatter", "FrontMatter\FrontMatter.csproj", "{3206BA0E-3826-40E6-8892-825B7FCD2922}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownTests", "MarkdownTests\MarkdownTests.csproj", "{D0DA69A6-C700-467C-A09E-96DF8002026F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +20,21 @@ Global
 		{11225780-2356-4F1A-B6E9-E36C98E97D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11225780-2356-4F1A-B6E9-E36C98E97D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11225780-2356-4F1A-B6E9-E36C98E97D6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB5000DF-BA92-42E6-8B24-A9E8E5B30C47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB5000DF-BA92-42E6-8B24-A9E8E5B30C47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB5000DF-BA92-42E6-8B24-A9E8E5B30C47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB5000DF-BA92-42E6-8B24-A9E8E5B30C47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5F8BF38-D84F-4310-A723-41A2E2881575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5F8BF38-D84F-4310-A723-41A2E2881575}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5F8BF38-D84F-4310-A723-41A2E2881575}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5F8BF38-D84F-4310-A723-41A2E2881575}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3206BA0E-3826-40E6-8892-825B7FCD2922}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3206BA0E-3826-40E6-8892-825B7FCD2922}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3206BA0E-3826-40E6-8892-825B7FCD2922}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3206BA0E-3826-40E6-8892-825B7FCD2922}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0DA69A6-C700-467C-A09E-96DF8002026F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0DA69A6-C700-467C-A09E-96DF8002026F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0DA69A6-C700-467C-A09E-96DF8002026F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0DA69A6-C700-467C-A09E-96DF8002026F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

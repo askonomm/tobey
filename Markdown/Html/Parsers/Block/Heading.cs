@@ -6,7 +6,7 @@ public class Heading : IBlockParser
     {
         return new List<IInlineParser>
         {
-            new Inline.ItalicParser(),
+            new Inline.Italic(),
         };
     }
     

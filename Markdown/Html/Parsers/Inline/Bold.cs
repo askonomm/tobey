@@ -4,7 +4,7 @@ namespace Markdown.Html.Parsers.Inline;
 
 public partial class Bold : IInlineParser
 {
-    [GeneratedRegex(@"\*\*(.*?)\*\*")]
+    [GeneratedRegex(@"(\*{2}(.*?)\*{2}|_{2}(.*?)_{2})")]
     private static partial Regex MatchBold();
     
     public string[] Matches(string block)

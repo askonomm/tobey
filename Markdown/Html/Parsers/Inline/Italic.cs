@@ -4,7 +4,7 @@ namespace Markdown.Html.Parsers.Inline;
 
 public partial class Italic : IInlineParser
 {
-    [GeneratedRegex(@"\*(.*?)\*")]
+    [GeneratedRegex(@"\*{1}(.*?)\*{1}|_{1}(.*?)_{1}")]
     private static partial Regex MatchItalic();
     
     public string[] Matches(string block)

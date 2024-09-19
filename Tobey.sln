@@ -1,14 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobey", "Tobey\Tobey.csproj", "{11225780-2356-4F1A-B6E9-E36C98E97D6E}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tobey", "Tobey\Tobey.csproj", "{11225780-2356-4F1A-B6E9-E36C98E97D6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Markdown", "Markdown\Markdown.csproj", "{FB5000DF-BA92-42E6-8B24-A9E8E5B30C47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Markdown", "Markdown\Markdown.csproj", "{FB5000DF-BA92-42E6-8B24-A9E8E5B30C47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAML", "YAML\YAML.csproj", "{B5F8BF38-D84F-4310-A723-41A2E2881575}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAML", "YAML\YAML.csproj", "{B5F8BF38-D84F-4310-A723-41A2E2881575}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontMatter", "FrontMatter\FrontMatter.csproj", "{3206BA0E-3826-40E6-8892-825B7FCD2922}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrontMatter", "FrontMatter\FrontMatter.csproj", "{3206BA0E-3826-40E6-8892-825B7FCD2922}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownTests", "MarkdownTests\MarkdownTests.csproj", "{D0DA69A6-C700-467C-A09E-96DF8002026F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownTests", "MarkdownTests\MarkdownTests.csproj", "{651CF40D-2112-42CE-9A7E-FD055DC4DE08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +35,15 @@ Global
 		{3206BA0E-3826-40E6-8892-825B7FCD2922}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3206BA0E-3826-40E6-8892-825B7FCD2922}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3206BA0E-3826-40E6-8892-825B7FCD2922}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D0DA69A6-C700-467C-A09E-96DF8002026F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0DA69A6-C700-467C-A09E-96DF8002026F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0DA69A6-C700-467C-A09E-96DF8002026F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0DA69A6-C700-467C-A09E-96DF8002026F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{651CF40D-2112-42CE-9A7E-FD055DC4DE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{651CF40D-2112-42CE-9A7E-FD055DC4DE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{651CF40D-2112-42CE-9A7E-FD055DC4DE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{651CF40D-2112-42CE-9A7E-FD055DC4DE08}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6301EA7B-44B6-40D6-A3FA-AF9CAC0BEDED}
 	EndGlobalSection
 EndGlobal

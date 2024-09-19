@@ -6,9 +6,12 @@ public static class InlineParser
     {
         foreach (var parser in parsers)
         {
-            var matches = parser.Matches(block);
-            
-            block = matches.Aggregate(block, (current, match) => current.Replace(match, parser.Parse(match)));
+            var matches = parser.Matches(block).Distinct().ToArray();
+
+            foreach (var match in matches)
+            {
+                block = block.Replace(match, parser.Parse(match));
+            }
         }
         
         return block;

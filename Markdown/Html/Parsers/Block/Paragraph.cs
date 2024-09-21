@@ -6,11 +6,11 @@ public class Paragraph : IBlockParser
 {
     public List<IInlineParser> DefaultInlineParsers()
     {
-        return new List<IInlineParser>
-        {
+        return [
             new Bold(),
             new Italic(),
-        };
+            new Link(),
+        ];
     }
     
     public string Parse(string block)

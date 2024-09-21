@@ -71,4 +71,30 @@ public class LinkTest
         Assert.AreEqual("<a href=\"https://example.com\">link</a>", result);
     }
 
+    [TestMethod]
+    public void TestLinkWithAltTextParsing()
+    {
+        var link = new Markdown.Html.Parsers.Inline.Link();
+        var result = link.Parse("[link](https://example.com 'alt text')");
+
+        Assert.AreEqual("<a href=\"https://example.com\" title=\"alt text\">link</a>", result);
+    }
+
+    [TestMethod]
+    public void TestImageLinkParsing()
+    {
+        var link = new Markdown.Html.Parsers.Inline.Link();
+        var result = link.Parse("![image](https://example.com)");
+
+        Assert.AreEqual("<img src=\"https://example.com\" alt=\"image\" />", result);
+    }
+
+    [TestMethod]
+    public void TestImageLinkWithAltTextParsing()
+    {
+        var link = new Markdown.Html.Parsers.Inline.Link();
+        var result = link.Parse("![image](https://example.com 'alt text')");
+
+        Assert.AreEqual("<img src=\"https://example.com\" alt=\"image\" title=\"alt text\" />", result);
+    }
 }

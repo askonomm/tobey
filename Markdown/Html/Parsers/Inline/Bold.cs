@@ -4,14 +4,14 @@ namespace Markdown.Html.Parsers.Inline;
 
 public partial class Bold : IInlineParser
 {
-    [GeneratedRegex(@"(\*{2}(.*?)\*{2}|_{2}(.*?)_{2})")]
+    [GeneratedRegex(@"(?<match>(?<!\*)\*\*([^*\n]+)\*\*(?!\*)|(?<!_)__([^_\n]+)__(?!_))")]
     private static partial Regex MatchBold();
     
     public string[] Matches(string block)
     {
         return MatchBold()
             .Matches(block)
-            .Select(x => x.Value)
+            .Select(x => x.Groups["match"].Value)
             .ToArray();
     }
 

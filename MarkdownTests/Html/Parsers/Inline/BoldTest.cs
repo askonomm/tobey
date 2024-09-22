@@ -80,4 +80,15 @@ public class BoldTest
 
         Assert.AreEqual("<strong>bold</strong>", html);
     }
+
+    [TestMethod]
+    public void TestEnsureNoCrossOverWithItalicsMatches()
+    {
+        var bold = new Markdown.Html.Parsers.Inline.Bold();
+        var matches = bold.Matches("**bold** and __bold__ but not _____ and not ***** and not *italic* or _italic_");
+
+        Assert.AreEqual(2, matches.Length);
+        Assert.AreEqual("**bold**", matches[0]);
+        Assert.AreEqual("__bold__", matches[1]);
+    }
 }

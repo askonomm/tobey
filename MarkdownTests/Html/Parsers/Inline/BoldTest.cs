@@ -53,4 +53,31 @@ public class BoldTest
 
         Assert.AreEqual(0, matches.Length);
     }
+
+    [TestMethod]
+    public void TestBoldWithNoClosingMatch()
+    {
+        var bold = new Markdown.Html.Parsers.Inline.Bold();
+        var matches = bold.Matches("**bold");
+
+        Assert.AreEqual(0, matches.Length);
+    }
+
+    [TestMethod]
+    public void TestBoldWithNoOpeningMatch()
+    {
+        var bold = new Markdown.Html.Parsers.Inline.Bold();
+        var matches = bold.Matches("bold**");
+
+        Assert.AreEqual(0, matches.Length);
+    }
+
+    [TestMethod]
+    public void TestBoldParsing()
+    {
+        var bold = new Markdown.Html.Parsers.Inline.Bold();
+        var html = bold.Parse("**bold**");
+
+        Assert.AreEqual("<strong>bold</strong>", html);
+    }
 }

@@ -1,7 +1,7 @@
 ﻿namespace MarkdownTests.Html.Parsers.Block;
 
 [TestClass]
-public class Code
+public class CodeTest
 {
     [TestMethod]
     public void TestWithLanguageParsing()

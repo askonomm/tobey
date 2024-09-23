@@ -1,6 +1,6 @@
 ﻿namespace Markdown.Html.Stitchers;
 
-class Code : IBlockStitcher
+public class Code : IBlockStitcher
 {
     public List<Block> Stitch(List<Block> blocks)
     {

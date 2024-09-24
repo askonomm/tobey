@@ -3,6 +3,9 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <InvariantGlobalization>true</InvariantGlobalization>
@@ -10,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Markdown\Markdown.csproj" />
+      <ProjectReference Include="..\YAML\YAML.csproj" />
     </ItemGroup>
 
 </Project>

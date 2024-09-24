@@ -13,14 +13,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrontMatter", "FrontMatter\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownTests", "MarkdownTests\MarkdownTests.csproj", "{651CF40D-2112-42CE-9A7E-FD055DC4DE08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMLTests", "YAMLTests\YAMLTests.csproj", "{7849EAC9-81C3-4006-B5F6-E79234B2E725}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{11225780-2356-4F1A-B6E9-E36C98E97D6E}.Debug|Any CPU.ActiveCfg = Release|Any CPU
-		{11225780-2356-4F1A-B6E9-E36C98E97D6E}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{11225780-2356-4F1A-B6E9-E36C98E97D6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11225780-2356-4F1A-B6E9-E36C98E97D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11225780-2356-4F1A-B6E9-E36C98E97D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11225780-2356-4F1A-B6E9-E36C98E97D6E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB5000DF-BA92-42E6-8B24-A9E8E5B30C47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{651CF40D-2112-42CE-9A7E-FD055DC4DE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{651CF40D-2112-42CE-9A7E-FD055DC4DE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{651CF40D-2112-42CE-9A7E-FD055DC4DE08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7849EAC9-81C3-4006-B5F6-E79234B2E725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7849EAC9-81C3-4006-B5F6-E79234B2E725}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7849EAC9-81C3-4006-B5F6-E79234B2E725}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7849EAC9-81C3-4006-B5F6-E79234B2E725}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

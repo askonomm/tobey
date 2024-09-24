@@ -126,11 +126,31 @@ public class Parser
         return nodes;
     }
 
-    public static List<Node> Parse(string input)
+    public static Dictionary<string, object> Parse(string input)
     {
         using var reader = new StringReader(input);
+        var nodes = ParseBlock(reader, 0);
 
-        return ParseBlock(reader, 0);
+        return NodesToDict(nodes);
+    }
+
+    private static Dictionary<string, object> NodesToDict(List<Node> nodes)
+    {
+        var data = new Dictionary<string, object>();
+
+        foreach (var node in nodes)
+        {
+            if (node.Value is List<Node> list)
+            {
+                data[node.Key] = NodesToDict(list);
+            }
+            else
+            {
+                data[node.Key] = node.Value as string ?? string.Empty;
+            }
+        }
+
+        return data;
     }
 
     public static Node? FindMaybeNode(List<Node> nodes, string key)

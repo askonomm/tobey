@@ -29,7 +29,7 @@ public class Parser
             val.Remove(val.Length - 1, 1);
         }
 
-        return val.ToString();
+        return val.ToString().Trim();
     }
 
     private static List<Node> ParseBlock(StringReader reader, int indentLevel)
@@ -134,6 +134,36 @@ public class Parser
         return NodesToDict(nodes);
     }
 
+    private static object NodeValueToTypedValue(object value)
+    {
+        if (value is string str)
+        {
+            if (int.TryParse(str, out var intValue))
+            {
+                return intValue;
+            }
+
+            if (double.TryParse(str, out var doubleValue))
+            {
+                return doubleValue;
+            }
+
+            if (str == "true")
+            {
+                return true;
+            }
+
+            if (str == "false")
+            {
+                return false;
+            }
+
+            return str;
+        }
+
+        return value;
+    }
+
     private static Dictionary<string, object> NodesToDict(List<Node> nodes)
     {
         var data = new Dictionary<string, object>();
@@ -146,43 +176,10 @@ public class Parser
             }
             else
             {
-                data[node.Key] = node.Value as string ?? string.Empty;
+                data[node.Key] = NodeValueToTypedValue(node.Value);
             }
         }
 
         return data;
-    }
-
-    public static Node? FindMaybeNode(List<Node> nodes, string key)
-    {
-        var stack = new Stack<List<Node>>();
-        stack.Push(nodes);
-
-        while (stack.Count > 0)
-        {
-            var currentNodes = stack.Pop();
-
-            foreach (var node in currentNodes)
-            {
-                if (node.Key == key)
-                {
-                    return node;
-                }
-
-                if (node.Value is List<Node> list)
-                {
-                    stack.Push(list);
-                }
-            }
-        }
-
-        return null;
-    }
-
-    public static string FindMaybeStr(List<Node> nodes, string key)
-    {
-        var node = FindMaybeNode(nodes, key);
-
-        return node?.Value as string ?? string.Empty;
     }
 }

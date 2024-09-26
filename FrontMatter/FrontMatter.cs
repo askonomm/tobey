@@ -1,6 +1,6 @@
 ﻿namespace FrontMatter;
 
-public class Parser
+public class FrontMatter
 {
     public static Dictionary<string, object> Parse(string text)
     {        
@@ -13,14 +13,14 @@ public class Parser
         {
             return new Dictionary<string, object>
             {
-                { "content", new Markdown.Parser(text).ParseWith(new Markdown.Html.Parser()) }
+                { "content", new Markdown.Markdown(text).ParseWith(new Markdown.Html.Parser()) }
             };
         }
 
         var yaml = string.Join("\n", lines[(yamlStart + 1)..yamlEnd]).Trim();
         var markdown = string.Join("\n", lines[(yamlEnd + 1)..]).Trim();
-        var data = YAML.Parser.Parse(yaml);
-        var html = new Markdown.Parser(markdown).ParseWith(new Markdown.Html.Parser());
+        var data = YAML.YAML.Parse(yaml);
+        var html = new Markdown.Markdown(markdown).ParseWith(new Markdown.Html.Parser());
 
         data.Add("content", html);
 

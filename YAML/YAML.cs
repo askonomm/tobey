@@ -2,7 +2,7 @@
 
 namespace YAML;
 
-public class Parser
+public class YAML
 {
     private static string ParseMultilineValue(StringReader reader, int indentLevel)
     {

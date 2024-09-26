@@ -3,6 +3,6 @@
 //var html = md.ParseWith(new Markdown.Html.Parser());
 
 var yaml = "key: \"value\"\r\nsomething:\r\n\thello: world";
-var data = YAML.Parser.Parse(yaml);
+var data = YAML.YAML.Parse(yaml);
 
 Console.WriteLine(data.Count);

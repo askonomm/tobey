@@ -1,6 +1,6 @@
 ﻿namespace Markdown;
 
-public class Parser(string markdown)
+public class Markdown(string markdown)
 {
     /**
      * Returns a list of default block identifiers.

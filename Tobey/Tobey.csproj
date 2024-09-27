@@ -12,8 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Markdown\Markdown.csproj" />
-      <ProjectReference Include="..\YAML\YAML.csproj" />
+      <ProjectReference Include="..\FrontMatter\FrontMatter.csproj" />
     </ItemGroup>
 
 </Project>

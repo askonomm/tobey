@@ -2,9 +2,10 @@
 
 public class DataComposer(List<Dictionary<string, object>> content)
 {
+    private readonly List<string> specialKeys = ["sort_by", "limit", "offset"];
+
     public List<Dictionary<string, object>> Compose(Dictionary<string, object> val)
     {
-        var specialKeys = new List<string> { "sort_by", "limit", "offset" };
         var filterVal = val.Where(x => !specialKeys.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
         var newContent = content.Where(content => MeetsConditions(content, filterVal)).ToList();
 

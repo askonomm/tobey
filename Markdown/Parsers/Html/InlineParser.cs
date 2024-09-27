@@ -1,4 +1,4 @@
-﻿namespace Markdown.Html;
+﻿namespace Markdown.Parsers.Html;
 
 public static class InlineParser
 {
@@ -13,7 +13,7 @@ public static class InlineParser
                 block = block.Replace(match, parser.Parse(match));
             }
         }
-        
+
         return block;
     }
 }

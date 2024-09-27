@@ -6,7 +6,7 @@ public class CodeTest
     [TestMethod]
     public void TestCodeStitching()
     {
-        var code = new Markdown.Html.Stitchers.Code();
+        var code = new Markdown.Parsers.Html.Stitchers.Code();
         var blocks = new List<Markdown.Block>
         {
             new("code", "var x = 1;"),
@@ -22,7 +22,7 @@ public class CodeTest
     [TestMethod]
     public void TestCodeStitchingBetweenOtherBlocks()
     {
-        var code = new Markdown.Html.Stitchers.Code();
+        var code = new Markdown.Parsers.Html.Stitchers.Code();
         var blocks = new List<Markdown.Block>
         {
             new("paragraph", "This is a paragraph."),
@@ -39,7 +39,7 @@ public class CodeTest
     [TestMethod]
     public void TestCodeStitchingMultipleCodeRanges()
     {
-        var code = new Markdown.Html.Stitchers.Code();
+        var code = new Markdown.Parsers.Html.Stitchers.Code();
         var blocks = new List<Markdown.Block>
         {
             new("code", "var x = 1;"),

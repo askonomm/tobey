@@ -1,4 +1,4 @@
-﻿namespace Markdown.Html.Stitchers;
+﻿namespace Markdown.Parsers.Html.Stitchers;
 
 public class Code : IBlockStitcher
 {
@@ -6,7 +6,7 @@ public class Code : IBlockStitcher
     {
         var newBlocks = new List<Block>();
 
-        // Merge all concecutive "code" blocks together into one block
+        // Merge all consecutive "code" blocks together into one block
         for (int i = 0; i < blocks.Count; i++)
         {
             if (blocks.ElementAt(i).Name != "code")

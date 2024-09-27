@@ -3,13 +3,13 @@
 using YAML;
 
 [TestClass]
-public class YAMLTest
+public class ParserTest
 {
     [TestMethod]
     public void TestPlainValue()
     {
         var text = "key: \"value\"";
-        var result = YAML.Parse(text);
+        var result = Parser.Parse(text);
 
         Assert.AreEqual(1, result.Count);
         Assert.IsInstanceOfType(result["key"], typeof(string));
@@ -20,7 +20,7 @@ public class YAMLTest
     public void TestStringValue()
     {
         var text = "key: \"value\"";
-        var result = YAML.Parse(text);
+        var result = Parser.Parse(text);
         Assert.AreEqual(1, result.Count);
         Assert.IsInstanceOfType(result["key"], typeof(string));
         Assert.AreEqual("value", result["key"]);
@@ -30,7 +30,7 @@ public class YAMLTest
     public void TestMultilineValue()
     {
         var text = "key: |\n  value";
-        var result = YAML.Parse(text);
+        var result = Parser.Parse(text);
         Assert.AreEqual(1, result.Count);
         Assert.IsInstanceOfType(result["key"], typeof(string));
         Assert.AreEqual("value", result["key"]);
@@ -40,7 +40,7 @@ public class YAMLTest
     public void TestIntegerValue()
     {
         var text = "key: 42";
-        var result = YAML.Parse(text);
+        var result = Parser.Parse(text);
         Assert.AreEqual(1, result.Count);
         Assert.IsInstanceOfType(result["key"], typeof(int));
         Assert.AreEqual(42, result["key"]);
@@ -50,7 +50,7 @@ public class YAMLTest
     public void TestDoubleValue()
     {
         var text = "key: 42.42";
-        var result = YAML.Parse(text);
+        var result = Parser.Parse(text);
         Assert.AreEqual(1, result.Count);
         Assert.IsInstanceOfType(result["key"], typeof(double));
         Assert.AreEqual(42.42, result["key"]);
@@ -60,7 +60,7 @@ public class YAMLTest
     public void TestBooleanValue()
     {
         var text = "key: true";
-        var result = YAML.Parse(text);
+        var result = Parser.Parse(text);
         Assert.AreEqual(1, result.Count);
         Assert.IsInstanceOfType(result["key"], typeof(bool));
         Assert.AreEqual(true, result["key"]);
@@ -70,7 +70,7 @@ public class YAMLTest
     public void TestMultipleValues()
     {
         var text = "key: \"value\"\nkey2: 42";
-        var result = YAML.Parse(text);
+        var result = Parser.Parse(text);
         Assert.AreEqual(2, result.Count);
         Assert.IsInstanceOfType(result["key"], typeof(string));
         Assert.AreEqual("value", result["key"]);
@@ -82,7 +82,7 @@ public class YAMLTest
     public void TestNestedValues()
     {
         var text = "key: \"value\"\nkey2:\n  key3: 42";
-        var result = YAML.Parse(text);
+        var result = Parser.Parse(text);
         Assert.AreEqual(2, result.Count);
         Assert.IsInstanceOfType(result["key"], typeof(string));
         Assert.AreEqual("value", result["key"]);

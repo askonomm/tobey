@@ -1,4 +1,4 @@
-﻿namespace Markdown.Html;
+﻿namespace Markdown.Parsers.Html;
 
 public class Parser : IParser<string>
 {
@@ -26,20 +26,20 @@ public class Parser : IParser<string>
 
         // Parse blocks
         var html = "";
-        
+
         foreach (var block in blocks)
         {
             foreach (var (name, parser) in blockParsers)
             {
                 if (block.Name != name) continue;
-                
+
                 if (html != "") html += "\n\n";
-                
+
                 html += parser.Parse(block.Content);
                 break;
             }
         }
-        
+
         return html;
     }
 }

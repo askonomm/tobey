@@ -1,4 +1,4 @@
-﻿namespace Markdown.Html;
+﻿namespace Markdown.Parsers.Html;
 
 public interface IBlockStitcher
 {

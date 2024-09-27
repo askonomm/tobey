@@ -1,4 +1,4 @@
-﻿namespace Markdown.Html.Parsers.Block;
+﻿namespace Markdown.Parsers.Html.Parsers.Block;
 
 public class Code : IBlockParser
 {
@@ -22,7 +22,7 @@ public class Code : IBlockParser
 
         if (language.Length > 0)
         {
-            return $"<pre class=\"language-{ language}\"><code>{code}</code></pre>";
+            return $"<pre class=\"language-{language}\"><code>{code}</code></pre>";
         }
 
         return $"<pre><code>{code}</code></pre>";

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMLTests", "YAMLTests\YAML
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontMatterTests", "FrontMatterTests\FrontMatterTests.csproj", "{9A0E0383-535D-4971-825A-D865CE2F35C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TobeyTests", "TobeyTests\TobeyTests.csproj", "{152AC71A-FCBF-42D6-BA2E-26B1E63B5A9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{9A0E0383-535D-4971-825A-D865CE2F35C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A0E0383-535D-4971-825A-D865CE2F35C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A0E0383-535D-4971-825A-D865CE2F35C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{152AC71A-FCBF-42D6-BA2E-26B1E63B5A9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{152AC71A-FCBF-42D6-BA2E-26B1E63B5A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{152AC71A-FCBF-42D6-BA2E-26B1E63B5A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{152AC71A-FCBF-42D6-BA2E-26B1E63B5A9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

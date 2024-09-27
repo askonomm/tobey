@@ -2,11 +2,11 @@
 
 public class DataComposer(List<Dictionary<string, object>> content)
 {
-    public List<Dictionary<string, object>> Compose(string key, Dictionary<string, object> val)
+    public List<Dictionary<string, object>> Compose(Dictionary<string, object> val)
     {
         var specialKeys = new List<string> { "sort_by", "limit", "offset" };
         var filterVal = val.Where(x => !specialKeys.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
-        var newContent = content.Where(content => MeetsConditions(content, key, filterVal)).ToList();
+        var newContent = content.Where(content => MeetsConditions(content, filterVal)).ToList();
 
         // sort the content
         if (val.TryGetValue("sort_by", out object? sortBy))
@@ -38,14 +38,14 @@ public class DataComposer(List<Dictionary<string, object>> content)
         return newContent;
     }
 
-    public static bool MeetsConditions(Dictionary<string, object> item, string key, Dictionary<string, object> val)
+    private static bool MeetsConditions(Dictionary<string, object> item, Dictionary<string, object> val)
     {
         var conditionsCount = val.Count;
         var conditionsMet = 0;
 
         foreach (var (k, v) in val)
         {
-            if (item.TryGetValue(key, out object? value))
+            if (item.TryGetValue(k, out object? value))
             {
                 // is the value a string and the condition a string?
                 if (value is string && v is string)
@@ -56,28 +56,31 @@ public class DataComposer(List<Dictionary<string, object>> content)
                         continue;
                     }
                 }
+
                 // is the value a int and the condition a int?
                 if (value is int && v is int)
                 {
-                    if (value == v)
+                    if (value.Equals(v))
                     {
                         conditionsMet++;
                         continue;
                     }
                 }
+
                 // is the value a double and the condition a double?
                 if (value is double && v is double)
                 {
-                    if (value == v)
+                    if (value.Equals(v))
                     {
                         conditionsMet++;
                         continue;
                     }
                 }
+
                 // is the value a bool and the condition a bool?
                 if (value is bool && v is bool)
                 {
-                    if (value == v)
+                    if (value.Equals(v))
                     {
                         conditionsMet++;
                         continue;

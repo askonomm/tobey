@@ -1,9 +1,10 @@
-﻿namespace Markdown.Parsers.Html.Parsers.Block;
-
-public class HorizontalLine : IBlockParser
+﻿namespace Markdown.Parsers.Html.Parsers.Block
 {
-    public string Parse(string block)
+    public class HorizontalLine : IBlockParser
     {
-        return "<hr />";
+        public string Parse(string block)
+        {
+            return "<hr />";
+        }
     }
 }

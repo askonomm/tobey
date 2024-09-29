@@ -105,7 +105,7 @@
             Assert.AreEqual(true, result[0]["b"]);
         }
 
-        [TestMethod]
+            [TestMethod]
         public void TestComposerLimiting()
         {
             var content = new List<Dictionary<string, object>>

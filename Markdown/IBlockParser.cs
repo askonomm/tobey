@@ -1,6 +1,7 @@
-﻿namespace Markdown;
-
-public interface IBlockParser
+﻿namespace Markdown
 {
-    public string Parse(string block);
+    public interface IBlockParser
+    {
+        public string Parse(string block);
+    }
 }

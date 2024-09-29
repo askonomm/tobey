@@ -1,6 +1,7 @@
-﻿namespace Markdown;
-
-public interface IParser<out T>
+﻿namespace Markdown
 {
-    public T Parse(List<Block> blocks);
+    public interface IParser<out T>
+    {
+        public T Parse(List<Block> blocks);
+    }
 }

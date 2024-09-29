@@ -1,22 +1,23 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Markdown.Html.Parsers.Inline;
-
-public partial class Bold : IInlineParser
+namespace Markdown.Parsers.Html.Parsers.Inline
 {
-    [GeneratedRegex(@"(?<match>(?<!\*)\*\*([^*\n]+)\*\*(?!\*)|(?<!_)__([^_\n]+)__(?!_))")]
-    private static partial Regex MatchBold();
-    
-    public string[] Matches(string block)
+    public partial class Bold : IInlineParser
     {
-        return MatchBold()
-            .Matches(block)
-            .Select(x => x.Groups["match"].Value)
-            .ToArray();
-    }
+        [GeneratedRegex(@"(?<match>(?<!\*)\*\*([^*\n]+)\*\*(?!\*)|(?<!_)__([^_\n]+)__(?!_))")]
+        private static partial Regex MatchBold();
 
-    public string Parse(string match)
-    {
-        return $"<strong>{match[2..^2]}</strong>";
+        public string[] Matches(string block)
+        {
+            return MatchBold()
+                .Matches(block)
+                .Select(x => x.Groups["match"].Value)
+                .ToArray();
+        }
+
+        public string Parse(string match)
+        {
+            return $"<strong>{match[2..^2]}</strong>";
+        }
     }
 }

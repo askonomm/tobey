@@ -10,7 +10,7 @@
             }
             else
             {
-                Console.WriteLine("Not watching...");
+                Compiler.Compile("C:\\Users\\askon\\Code\\faultd.com");
             }
         }
     }

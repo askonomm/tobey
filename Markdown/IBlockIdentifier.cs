@@ -1,8 +1,9 @@
-﻿namespace Markdown;
-
-public interface IBlockIdentifier
+﻿namespace Markdown
 {
-    public string Name { get; }
-    
-    public bool Identifies(int currentBlock, string[] blocks);
+    public interface IBlockIdentifier
+    {
+        public string Name { get; }
+
+        public bool Identifies(int currentBlock, string[] blocks);
+    }
 }

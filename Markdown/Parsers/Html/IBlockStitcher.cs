@@ -1,6 +1,7 @@
-﻿namespace Markdown.Parsers.Html;
-
-public interface IBlockStitcher
+﻿namespace Markdown.Parsers.Html
 {
-    List<Block> Stitch(List<Block> blocks);
+    public interface IBlockStitcher
+    {
+        List<Block> Stitch(List<Block> blocks);
+    }
 }

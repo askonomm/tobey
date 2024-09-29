@@ -1,19 +1,20 @@
-﻿namespace Markdown.Parsers.Html;
-
-public static class InlineParser
+﻿namespace Markdown.Parsers.Html
 {
-    public static string Parse(string block, List<IInlineParser> parsers)
+    public static class InlineParser
     {
-        foreach (var parser in parsers)
+        public static string Parse(string block, List<IInlineParser> parsers)
         {
-            var matches = parser.Matches(block).Distinct().ToArray();
-
-            foreach (var match in matches)
+            foreach (var parser in parsers)
             {
-                block = block.Replace(match, parser.Parse(match));
-            }
-        }
+                var matches = parser.Matches(block).Distinct().ToArray();
 
-        return block;
+                foreach (var match in matches)
+                {
+                    block = block.Replace(match, parser.Parse(match));
+                }
+            }
+
+            return block;
+        }
     }
 }

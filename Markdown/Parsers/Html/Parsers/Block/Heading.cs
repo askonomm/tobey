@@ -1,26 +1,29 @@
-﻿namespace Markdown.Parsers.Html.Parsers.Block;
+﻿using Markdown.Parsers.Html.Parsers.Inline;
 
-public class Heading : IBlockParser
+namespace Markdown.Parsers.Html.Parsers.Block
 {
-    public List<IInlineParser> DefaultInlineParsers()
+    public class Heading : IBlockParser
     {
-        return
-        [
-            new Markdown.Html.Parsers.Inline.Italic(),
-            new Markdown.Html.Parsers.Inline.Link(),
-        ];
-    }
+        public List<IInlineParser> DefaultInlineParsers()
+        {
+            return
+            [
+                new Italic(),
+                new Link(),
+            ];
+        }
 
-    public string Parse(string block)
-    {
-        return Parse(block, DefaultInlineParsers());
-    }
+        public string Parse(string block)
+        {
+            return Parse(block, DefaultInlineParsers());
+        }
 
-    public string Parse(string block, List<IInlineParser> inlineParsers)
-    {
-        var level = block.TakeWhile(c => c == '#').Count();
-        var text = block[level..].Trim();
+        public string Parse(string block, List<IInlineParser> inlineParsers)
+        {
+            var level = block.TakeWhile(c => c == '#').Count();
+            var text = block[level..].Trim();
 
-        return $"<h{level}>{InlineParser.Parse(text, inlineParsers)}</h{level}>";
+            return $"<h{level}>{InlineParser.Parse(text, inlineParsers)}</h{level}>";
+        }
     }
 }

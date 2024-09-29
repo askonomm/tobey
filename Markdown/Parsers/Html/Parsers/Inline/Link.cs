@@ -1,48 +1,49 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Markdown.Html.Parsers.Inline;
-
-public partial class Link : IInlineParser
+namespace Markdown.Parsers.Html.Parsers.Inline
 {
-    [GeneratedRegex(@"(\!?\[(.*?)\]\((.*?)\))")]
-    private static partial Regex MatchLink();
-
-    [GeneratedRegex(@"(\[(?<label>.*?)\])")]
-    private static partial Regex MatchLinkLabel();
-
-    [GeneratedRegex(@"(\((?<url>.*?)(\s(\""|\')(?<alt>.*?)(\""|\'))?\))")]
-    private static partial Regex MatchLinkURL();
-
-    public string[] Matches(string block)
+    public partial class Link : IInlineParser
     {
-        return MatchLink()
-            .Matches(block)
-            .Select(x => x.Value)
-            .ToArray();
-    }
+        [GeneratedRegex(@"(\!?\[(.*?)\]\((.*?)\))")]
+        private static partial Regex MatchLink();
 
-    public string Parse(string match)
-    {
-        var urlGroups = MatchLinkURL().Match(match).Groups;
-        var url = urlGroups["url"].Value;
-        var alt = urlGroups.ContainsKey("alt") ? urlGroups["alt"].Value : "";
-        var label = MatchLinkLabel().Match(match).Groups["label"].Value;
+        [GeneratedRegex(@"(\[(?<label>.*?)\])")]
+        private static partial Regex MatchLinkLabel();
 
-        if (match.StartsWith('!') && alt.Length > 0)
+        [GeneratedRegex(@"(\((?<url>.*?)(\s(\""|\')(?<alt>.*?)(\""|\'))?\))")]
+        private static partial Regex MatchLinkURL();
+
+        public string[] Matches(string block)
         {
-            return $"<img src=\"{url}\" alt=\"{label}\" title=\"{alt}\" />";
+            return MatchLink()
+                .Matches(block)
+                .Select(x => x.Value)
+                .ToArray();
         }
 
-        if (match.StartsWith('!'))
+        public string Parse(string match)
         {
-            return $"<img src=\"{url}\" alt=\"{label}\" />";
-        }
+            var urlGroups = MatchLinkURL().Match(match).Groups;
+            var url = urlGroups["url"].Value;
+            var alt = urlGroups.ContainsKey("alt") ? urlGroups["alt"].Value : "";
+            var label = MatchLinkLabel().Match(match).Groups["label"].Value;
 
-        if (alt.Length > 0)
-        {
-            return $"<a href=\"{url}\" title=\"{alt}\">{label}</a>";
-        }
+            if (match.StartsWith('!') && alt.Length > 0)
+            {
+                return $"<img src=\"{url}\" alt=\"{label}\" title=\"{alt}\" />";
+            }
 
-        return $"<a href=\"{url}\">{label}</a>";
+            if (match.StartsWith('!'))
+            {
+                return $"<img src=\"{url}\" alt=\"{label}\" />";
+            }
+
+            if (alt.Length > 0)
+            {
+                return $"<a href=\"{url}\" title=\"{alt}\">{label}</a>";
+            }
+
+            return $"<a href=\"{url}\">{label}</a>";
+        }
     }
 }

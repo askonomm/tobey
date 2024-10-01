@@ -1,4 +1,4 @@
-﻿namespace MarkdownTests.Html.Parsers.Inline
+﻿namespace MarkdownTests.Parsers.Html.Parsers.Inline
 {
     [TestClass]
     public class BoldTest

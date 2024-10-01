@@ -1,4 +1,4 @@
-﻿namespace MarkdownTests.Html.Parsers.Block;
+﻿namespace MarkdownTests.Parsers.Html.Parsers.Block;
 
 [TestClass]
 public class ParagraphTest

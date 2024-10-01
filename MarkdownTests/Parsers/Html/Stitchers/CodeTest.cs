@@ -1,4 +1,4 @@
-﻿namespace MarkdownTests.Html.Stitchers;
+﻿namespace MarkdownTests.Parsers.Html.Stitchers;
 
 [TestClass]
 public class CodeTest

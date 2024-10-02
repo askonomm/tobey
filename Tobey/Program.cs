@@ -7,7 +7,7 @@
             if (args.Contains("--watch"))
             {
                 Console.WriteLine("Watching...");
-                Watcher.Watch(".", new Action(() => Compiler.Compile(".")));
+                Watcher.Watch(".", () => Compiler.Compile("."));
             }
             else
             {

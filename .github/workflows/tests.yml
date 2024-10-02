@@ -1,0 +1,16 @@
+name: Run Tests
+
+on:
+    pull_request:
+        branches:
+        - main
+
+jobs:
+    test:
+        runs-on: windows-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Run all .NET tests
+              run: dotnet test --no-build --verbosity normal

@@ -6,3 +6,5 @@ riderModule.iml
 /.vs
 /Tobey.sln.DotSettings.user
 /Tobey/test.md
+/.idea
+/publish

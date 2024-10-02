@@ -1,0 +1,37 @@
+name: Distribute
+
+on:
+    push:
+        branches:
+        - main
+          
+jobs:
+  distribute:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Publish
+        run: dotnet publish --configuration Release --output publish
+
+      - name: Distribute
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tobey.exe
+          path: publish/Tobey.exe
+          
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          make_latest: true
+          files: "publish/Tobey.exe"

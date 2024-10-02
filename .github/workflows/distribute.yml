@@ -2,8 +2,8 @@ name: Distribute
 
 on:
     push:
-        branches:
-        - master
+        tags:
+        - '*'
           
 jobs:
   distribute:

@@ -1,5 +1,6 @@
 name: Distribute
-
+permissions: 
+  contents: write
 on:
     push:
         tags:

@@ -27,6 +27,12 @@
             {
                 return;
             }
+            
+            // Ignore dot files
+            if (e.Name == null || e.Name.StartsWith('.'))
+            {
+                return;
+            }
 
             Console.WriteLine($"File: {e.FullPath} {e.ChangeType}");
 

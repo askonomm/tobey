@@ -7,10 +7,10 @@ public class DataComposer(List<Dictionary<string, object>> content)
     public List<Dictionary<string, object>> Compose(Dictionary<string, object> val)
     {
         var filterVal = val.Where(x => !specialKeys.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
-        var newContent = content.Where(content => MeetsConditions(content, filterVal)).ToList();
+        var newContent = content.Where(c => MeetsConditions(c, filterVal)).ToList();
 
         // sort the content
-        if (val.TryGetValue("sort_by", out object? sortBy))
+        if (val.TryGetValue("sort_by", out var sortBy))
         {
             if (sortBy is string sortByStr)
             {
@@ -46,12 +46,12 @@ public class DataComposer(List<Dictionary<string, object>> content)
 
         foreach (var (k, v) in val)
         {
-            if (item.TryGetValue(k, out object? value))
+            if (item.TryGetValue(k, out var value))
             {
                 // is the value a string and the condition a string?
                 if (value is string && v is string)
                 {
-                    if (value == v)
+                    if (value.Equals(v))
                     {
                         conditionsMet++;
                         continue;
@@ -84,7 +84,6 @@ public class DataComposer(List<Dictionary<string, object>> content)
                     if (value.Equals(v))
                     {
                         conditionsMet++;
-                        continue;
                     }
                 }
             }

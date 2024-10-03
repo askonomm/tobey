@@ -40,7 +40,7 @@ public class Parser
         while ((line = reader.ReadLine()) != null)
         {
             var currentIndent = line.TakeWhile(Char.IsWhiteSpace).Count();
-
+            
             // Skip empty lines
             if (string.IsNullOrWhiteSpace(line))
             {
@@ -59,8 +59,7 @@ public class Parser
                 reader.ReadLine();
                 break;
             }
-
-            line = line.Trim();
+            
             if (line == string.Empty) continue;
 
             // List item (belongs to the previous node)

@@ -9,7 +9,7 @@ public class Parser
             throw new Exception("The text does not conform to the structure of FrontMatter.");
         }
 
-        var lines = text.Split("\r\n").Select(x => x.Trim()).ToArray();
+        var lines = text.Split("\r\n").Select(x => x).ToArray();
         var yamlStart = Array.IndexOf(lines, "---");
         var yamlEnd = Array.IndexOf(lines, "---", 1);
         var yaml = string.Join("\n", lines[(yamlStart + 1)..yamlEnd]).Trim();

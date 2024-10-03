@@ -53,7 +53,7 @@ namespace Tobey
             {
                 var item = newContent[i];
 
-                if (item.TryGetValue("composer", out object? composer))
+                if (item.TryGetValue("composer", out var composer))
                 {
                     if (composer is Dictionary<string, object> composerDict)
                     {
@@ -81,11 +81,11 @@ namespace Tobey
             return newContent;
         }
 
-        public static void Write(string path, List<Dictionary<string, object>> content)
+        private static void Write(string path, List<Dictionary<string, object>> content)
         {
             Parallel.ForEach(content, item =>
             {
-                if (item.TryGetValue("template", out object? template))
+                if (item.TryGetValue("template", out var template))
                 {
                     if (template is string templateStr)
                     {
@@ -94,7 +94,7 @@ namespace Tobey
                         var handlebars = HandlebarsDotNet.Handlebars.Compile(templateContent);
                         var html = handlebars(item);
 
-                        if (item.TryGetValue("path", out object? output))
+                        if (item.TryGetValue("path", out var output))
                         {
                             if (output is string writeTo)
                             {

@@ -3,12 +3,13 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
-		<PublishSingleFile>true</PublishSingleFile>
 		<SelfContained>true</SelfContained>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <ImplicitUsings>enable</ImplicitUsings>
+        <IlcOptimizationPreference>Size</IlcOptimizationPreference>
         <Nullable>enable</Nullable>
         <InvariantGlobalization>true</InvariantGlobalization>
+        <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
     </PropertyGroup>
 
     <ItemGroup>

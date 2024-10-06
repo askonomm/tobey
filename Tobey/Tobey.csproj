@@ -10,7 +10,7 @@
         <IlcOptimizationPreference>Size</IlcOptimizationPreference>
         <Nullable>enable</Nullable>
         <InvariantGlobalization>true</InvariantGlobalization>
-        <LangVersion>13</LangVersion>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

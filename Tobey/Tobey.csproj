@@ -4,20 +4,21 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
 		<SelfContained>true</SelfContained>
+        <PublishSingleFile>true</PublishSingleFile>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <ImplicitUsings>enable</ImplicitUsings>
         <IlcOptimizationPreference>Size</IlcOptimizationPreference>
         <Nullable>enable</Nullable>
         <InvariantGlobalization>true</InvariantGlobalization>
-        <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
+        <LangVersion>13</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Handlebars.Net" Version="2.1.6" />
+      <ProjectReference Include="..\FrontMatter\FrontMatter.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FrontMatter\FrontMatter.csproj" />
+      <PackageReference Include="Scriban" Version="5.10.0" />
     </ItemGroup>
 
 </Project>

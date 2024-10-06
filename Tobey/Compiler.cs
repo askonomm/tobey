@@ -1,8 +1,9 @@
 ﻿using System.Collections.Concurrent;
+using Scriban;
 
 namespace Tobey
 {
-    internal class Compiler
+    internal static class Compiler
     {
         public static void Compile(string path)
         {
@@ -52,30 +53,28 @@ namespace Tobey
             Parallel.For(0, newContent.Count, i =>
             {
                 var item = newContent[i];
-
-                if (item.TryGetValue("composer", out var composer))
+                
+                if (!item.TryGetValue("composer", out var composer) || composer is not Dictionary<string, object> composerDict)
                 {
-                    if (composer is Dictionary<string, object> composerDict)
+                    return;
+                }
+                
+                var dc = new DataComposer(newContent);
+                
+                foreach (var key in composerDict.Keys)
+                {
+                    if (composerDict[key] is not Dictionary<string, object> v)
                     {
-                        var dc = new DataComposer(newContent);
-
-                        // each key in composerDict corresponds to one DSL item
-                        foreach (var key in composerDict.Keys)
-                        {
-                            var val = composerDict[key];
-
-                            if (val is Dictionary<string, object> v)
-                            {
-                                lock (item)
-                                {
-                                    item.Add(key, dc.Compose(v));
-                                }
-                            }
-                        }
-
-                        newContent[i] = item;
+                        continue;
+                    }
+                    
+                    lock (item)
+                    {
+                        item.Add(key, dc.Compose(v));
                     }
                 }
+
+                newContent[i] = item;
             });
 
             return newContent;
@@ -85,38 +84,37 @@ namespace Tobey
         {
             Parallel.ForEach(content, item =>
             {
-                if (item.TryGetValue("template", out var template))
+                if (!item.TryGetValue("template", out var template) || template is not string templateStr)
                 {
-                    if (template is string templateStr)
-                    {
-                        var templatePath = Path.Combine(path, "layouts", templateStr);
-                        var templateContent = File.ReadAllText(templatePath);
-                        var handlebars = HandlebarsDotNet.Handlebars.Compile(templateContent);
-                        var html = handlebars(item);
-
-                        if (item.TryGetValue("path", out var output))
-                        {
-                            if (output is string writeTo)
-                            {
-                                // Create parent directories if they don't exist
-                                var outputPath = Path.Combine(path, "output", writeTo);
-                                var directoryPath = Path.GetDirectoryName(outputPath);
-
-                                if (directoryPath != null)
-                                {
-                                    Directory.CreateDirectory(directoryPath);
-                                }
-
-                                File.WriteAllText(outputPath, html);
-                                Console.WriteLine($"Created {writeTo}");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"ERROR: {item["full_path"]} does not have \"path\" FrontMatter key set.");
-                        }
-                    }
+                    return;
                 }
+                
+                if (!item.TryGetValue("path", out var output) || output is not string writeTo)
+                {
+                    return;
+                }
+                
+                var templatePath = Path.Combine(path, "layouts", templateStr);
+                
+                if (!File.Exists(templatePath))
+                {
+                    Console.WriteLine($"Template {templateStr} not found.");
+                    return;
+                }
+                
+                var templateContent = File.ReadAllText(templatePath);
+                var t = Template.Parse(templateContent);
+                var html = t.Render(item);
+                var outputPath = Path.Combine(path, "output", writeTo);
+                var directoryPath = Path.GetDirectoryName(outputPath);
+                
+                if (directoryPath != null)
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                File.WriteAllText(outputPath, html);
+                Console.WriteLine($"Created {writeTo}");
             });
         }
     }

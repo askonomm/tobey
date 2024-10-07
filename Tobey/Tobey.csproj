@@ -7,9 +7,7 @@
         <PublishSingleFile>true</PublishSingleFile>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <ImplicitUsings>enable</ImplicitUsings>
-        <IlcOptimizationPreference>Size</IlcOptimizationPreference>
         <Nullable>enable</Nullable>
-        <InvariantGlobalization>true</InvariantGlobalization>
         <LangVersion>12</LangVersion>
     </PropertyGroup>
 

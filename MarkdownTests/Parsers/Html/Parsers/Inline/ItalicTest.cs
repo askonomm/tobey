@@ -111,5 +111,16 @@
             Assert.AreEqual("_italic_", matches[0]);
             Assert.AreEqual("*italic*", matches[1]);
         }
+
+        [TestMethod]
+        public void TestNoParsingInsideInlineCode()
+        {
+            var italic = new Markdown.Parsers.Html.Parsers.Inline.Italic();
+            var html = italic.Matches("`*italic*`, `_italic_`");
+            var html2 = italic.Matches("and I want to add a `where_not`, `where_in`, `where_not_in`, `offset` and `limit` clauses as well.");
+            
+            Assert.AreEqual(0, html.Length);
+            Assert.AreEqual(0, html2.Length);
+        }
     }
 }

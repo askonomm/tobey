@@ -4,9 +4,8 @@ namespace Markdown.Parsers.Html.Parsers.Inline
 {
     public partial class Italic : IInlineParser
     {
-        [GeneratedRegex(@"(?<match>(?<!\*)\*([^*\n]+)\*(?!\*)|(?<!_)_([^_\n]+)_(?!_))")]
+        [GeneratedRegex(@"(?<match>(?<!`)(?<!\*)\*([^*\n`]+)\*(?!\*)(?!`)|(?<!`)(?<!_)_([^_\n`]+)_(?!_)(?!`))(?![^`]*`)")]
         private static partial Regex MatchItalic();
-
         public string[] Matches(string block)
         {
             return MatchItalic()

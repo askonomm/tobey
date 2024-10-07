@@ -1,4 +1,4 @@
-﻿using Markdown.Parsers.Html.Parsers.Inline;
+﻿using Markdown.Parsers.Html.Parsers;
 
 namespace Markdown.Parsers.Html.Parsers.Block
 {
@@ -7,9 +7,10 @@ namespace Markdown.Parsers.Html.Parsers.Block
         public static List<IInlineParser> DefaultInlineParsers()
         {
             return [
-                new Bold(),
-                new Italic(),
-                new Link(),
+                new Inline.Bold(),
+                new Inline.Italic(),
+                new Inline.Link(),
+                new Inline.Code()
             ];
         }
 

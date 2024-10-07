@@ -31,7 +31,7 @@
         {
             // Split the markdown into blocks
             // TODO: Make this work on non-Windows, too.
-            var blocks = markdown.Split("\r\n\r\n");
+            var blocks = markdown.Split("\n\n");
 
             // Create a list of identified blocks
             var identifiedBlocks = new List<Block>();

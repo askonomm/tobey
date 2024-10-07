@@ -11,7 +11,15 @@
                 .Take(content.Split("\n").Length - 2)
                 .Aggregate("", (current, line) => current + line + "\n")
                 .Trim();
-
+            
+            // HTML entities
+            code = code
+                .Replace("&", "&amp;")
+                .Replace("<", "&lt;")
+                .Replace(">", "&gt;")
+                .Replace("\"", "&quot;")
+                .Replace("'", "&#39;");
+            
             // Get language from the first line after backticks
             var language = content
                 .Split("\n")

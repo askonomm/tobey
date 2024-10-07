@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Scriban" Version="5.10.0" />
+      <PackageReference Include="Handlebars.Net" Version="2.1.6" />
     </ItemGroup>
 
 </Project>

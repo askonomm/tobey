@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using Scriban;
+using HandlebarsDotNet;
 
 namespace Tobey
 {
@@ -15,6 +15,9 @@ namespace Tobey
 
             Console.WriteLine("Writing content ...");
             Write(path, content);
+            
+            Console.WriteLine("Moving assets ...");
+            MoveAssets(path);
         }
 
         private static List<Dictionary<string, object>> ComposeContent(string path)
@@ -103,8 +106,8 @@ namespace Tobey
                 }
                 
                 var templateContent = File.ReadAllText(templatePath);
-                var t = Template.Parse(templateContent);
-                var html = t.Render(item);
+                var t = Handlebars.Compile(templateContent);
+                var html = t(item);
                 var outputPath = Path.Combine(path, "output", writeTo);
                 var directoryPath = Path.GetDirectoryName(outputPath);
                 
@@ -115,6 +118,40 @@ namespace Tobey
 
                 File.WriteAllText(outputPath, html);
                 Console.WriteLine($"Created {writeTo}");
+            });
+        }
+        
+        private static void MoveAssets(string path)
+        {
+            var assetsPath = Path.Combine(path, "assets");
+            var outputAssetsPath = Path.Combine(path, "output", "assets");
+            
+            if (!Directory.Exists(assetsPath))
+            {
+                Console.WriteLine("No assets found.");
+                return;
+            }
+            
+            if (!Directory.Exists(outputAssetsPath))
+            {
+                Directory.CreateDirectory(outputAssetsPath);
+            }
+            
+            var files = Directory.GetFiles(assetsPath, "*", SearchOption.AllDirectories);
+            
+            Parallel.ForEach(files, file =>
+            {
+                var relativePath = Path.GetRelativePath(assetsPath, file);
+                var outputPath = Path.Combine(outputAssetsPath, relativePath);
+                var directoryPath = Path.GetDirectoryName(outputPath);
+                
+                if (directoryPath != null)
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+                
+                File.Copy(file, outputPath, true);
+                Console.WriteLine($"Copied {relativePath}");
             });
         }
     }

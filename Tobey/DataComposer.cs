@@ -2,11 +2,11 @@
 
 public class DataComposer(List<Dictionary<string, object>> content)
 {
-    private readonly List<string> specialKeys = ["sort_by", "limit", "offset"];
+    private readonly List<string> _specialKeys = ["sort_by", "sort_order", "limit", "offset"];
 
     public List<Dictionary<string, object>> Compose(Dictionary<string, object> val)
     {
-        var filterVal = val.Where(x => !specialKeys.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
+        var filterVal = val.Where(x => !_specialKeys.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
         var newContent = content.Where(c => MeetsConditions(c, filterVal)).ToList();
 
         // sort the content
@@ -14,7 +14,19 @@ public class DataComposer(List<Dictionary<string, object>> content)
         {
             if (sortBy is string sortByStr)
             {
-                newContent = [.. newContent.OrderBy(x => x.TryGetValue(sortByStr, out object? v) ? v : null)];
+                newContent = [.. newContent.OrderBy(x => x.GetValueOrDefault(sortByStr))];
+            }
+        }
+        
+        // order the content
+        if (val.TryGetValue("sort_order", out var order))
+        {
+            if (order is string orderStr)
+            {
+                if (orderStr == "desc")
+                {
+                    newContent.Reverse();
+                }
             }
         }
 

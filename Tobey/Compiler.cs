@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using HandlebarsDotNet;
+using Htmt;
 
 namespace Tobey
 {
@@ -106,8 +106,7 @@ namespace Tobey
                 }
                 
                 var templateContent = File.ReadAllText(templatePath);
-                var t = Handlebars.Compile(templateContent);
-                var html = t(item);
+                var html = new Parser(templateContent).Parse(item);
                 var outputPath = Path.Combine(path, "output", writeTo);
                 var directoryPath = Path.GetDirectoryName(outputPath);
                 

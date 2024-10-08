@@ -11,10 +11,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FrontMatter\FrontMatter.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Handlebars.Net" Version="2.1.6" />
+      <ProjectReference Include="..\Htmt\Htmt.csproj" />
     </ItemGroup>
 
 </Project>

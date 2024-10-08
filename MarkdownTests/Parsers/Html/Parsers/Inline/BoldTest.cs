@@ -91,5 +91,16 @@
             Assert.AreEqual("**bold**", matches[0]);
             Assert.AreEqual("__bold__", matches[1]);
         }
+        
+        [TestMethod]
+        public void TestNoParsingInsideInlineCode()
+        {
+            var bold = new Markdown.Parsers.Html.Parsers.Inline.Bold();
+            var matches = bold.Matches("`**bold**`, `__bold__`");
+            var matches2 = bold.Matches("What about `**bold**` and `__bold__` and so on.");
+
+            Assert.AreEqual(0, matches.Length);
+            Assert.AreEqual(0, matches2.Length);
+        }
     }
 }

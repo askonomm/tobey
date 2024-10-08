@@ -116,11 +116,11 @@
         public void TestNoParsingInsideInlineCode()
         {
             var italic = new Markdown.Parsers.Html.Parsers.Inline.Italic();
-            var html = italic.Matches("`*italic*`, `_italic_`");
-            var html2 = italic.Matches("and I want to add a `where_not`, `where_in`, `where_not_in`, `offset` and `limit` clauses as well.");
+            var matches = italic.Matches("`*italic*`, `_italic_`");
+            var matches2 = italic.Matches("and I want to add a `where_not`, `where_in`, `where_not_in`, `offset` and `limit` clauses as well.");
             
-            Assert.AreEqual(0, html.Length);
-            Assert.AreEqual(0, html2.Length);
+            Assert.AreEqual(0, matches.Length);
+            Assert.AreEqual(0, matches2.Length);
         }
     }
 }

@@ -21,7 +21,7 @@ public class Parser
         XmlResolver = null
     };
     
-    private const string HtmtNamespace = "http://htmt";
+    private const string HtmtNamespace = "http://www.w3.org/1999/xhtml";
     
     public Parser(string template)
     {
@@ -35,9 +35,9 @@ public class Parser
         // Parse Template to XML representation
         _xml = new XmlDocument();
         _nsManager = new XmlNamespaceManager(_xml.NameTable);
-        _nsManager.AddNamespace("htmt", "http://htmt");
+        _nsManager.AddNamespace("x", HtmtNamespace);
         
-        var templateStr = $"<root xmlns:htmt=\"{HtmtNamespace}\">{template}</root>";
+        var templateStr = $"<root xmlns:x=\"{HtmtNamespace}\">{template}</root>";
         using var reader = XmlReader.Create(new StringReader(templateStr), _settings);
         _xml.Load(reader);
         
@@ -61,9 +61,9 @@ public class Parser
         // Parse Template to XML representation
         _xml = xml;
         _nsManager = new XmlNamespaceManager(_xml.NameTable);
-        _nsManager.AddNamespace("htmt", "http://htmt");
+        _nsManager.AddNamespace("x", HtmtNamespace);
         
-        var templateStr = $"<root xmlns:htmt=\"{HtmtNamespace}\">{template}</root>";
+        var templateStr = $"<root xmlns:x=\"{HtmtNamespace}\">{template}</root>";
         using var reader = XmlReader.Create(new StringReader(templateStr), _settings);
         _xml.Load(reader);
         
@@ -130,67 +130,35 @@ public class Parser
 
     private void RunMutations(Dictionary<string, object> data)
     {
-        // Parse Print nodes
-        ParsePrintNodes(data);
-        
-        // Parse htmt-href attributes
+        // Parse x:href attributes
         ParseHrefAttributes(data);
         
-        // Parse htmt-inner attributes
-        ParseInnerAttributes(data);
+        // Parse x:inner-text attributes
+        ParseInnerTextAttributes(data);
         
-        // Parse htmt-inner-html attributes
+        // Parse x:inner-html attributes
         ParseInnerHtmlAttributes(data);
         
-        // Parse If nodes
-        ParseIfNodes(data);
+        // Parse x:outer-text attributes
+        ParseOuterTextAttributes(data);
         
-        // Parse Unless nodes
-        ParseUnlessNodes(data);
+        // Parse x:if attributes
+        ParseIfAttributes(data);
         
-        // Parse For nodes
-        ParseForNodes(data);
-    }
-    
-    private void ParsePrintNodes(Dictionary<string, object> data)
-    {
-        // Replace all elements with a name of <htmt:print name="{key}" /> with the value of the key in the data dictionary
-        // If the element is inside a loop (<htmt:for collection="{key}" as="{var}"></htmt:for>, do not replace it. 
-        var selectedNodes = _doc?.SelectNodes("//htmt:print", _nsManager);
+        // Parse x:unless attributes
+        ParseUnlessAttributes(data);
         
-        // No nodes found
-        if (selectedNodes == null || selectedNodes.Count == 0)
-        {
-            return;
-        }
+        // Parse x:for attributes
+        ParseForAttributes(data);
         
-        foreach(var node in selectedNodes)
-        {
-            if (node is not XmlElement n) continue;
-            if (InsideForNode(n)) continue;
-            
-            var key = n.GetAttribute("key");
-            var keys = key.Split('.');
-            
-            // Traverse the data dictionary to find the correct value
-            var value = FindValueByKeys(data, keys);
-            
-            switch (value)
-            {
-                case string strValue:
-                    ReplaceNode(n, CreateTextNode(strValue));
-                    break;
-                case int intValue:
-                    ReplaceNode(n, CreateTextNode(intValue.ToString()));
-                    break;
-            }
-        }
+        // Parse Remove Outer nodes
+        //ParseRemoveOuterAttributes();
     }
 
     private void ParseHrefAttributes(Dictionary<string, object> data)
     {
         // Add href attribute to all elements with htmt-href="{key}" attribute
-        var selectedNodes = _doc?.SelectNodes("//*[@htmt-href]", _nsManager);
+        var selectedNodes = _doc?.SelectNodes("//*[@x:href]", _nsManager);
         
         // No nodes found
         if (selectedNodes == null || selectedNodes.Count == 0)
@@ -203,7 +171,7 @@ public class Parser
             if (node is not XmlElement n) continue;
             if (InsideForNode(n)) continue;
             
-            var val = n.GetAttribute("htmt-href");
+            var val = n.GetAttribute("x:href");
             // get str between { and } using regex
             var wholeKeyRegex = new Regex(@"\{.*?\}");
             var keyRegex = new Regex(@"(?<=\{)(.*?)(?=\})");
@@ -218,14 +186,14 @@ public class Parser
             // replace {...} with strValue (including brackets) in val
             val = wholeKeyRegex.Replace(val, strValue);
             n.SetAttribute("href", val);
-            n.RemoveAttribute("htmt-href");
+            n.RemoveAttribute("x:href");
         }
     }
     
-    private void ParseInnerAttributes(Dictionary<string, object> data)
+    private void ParseInnerTextAttributes(Dictionary<string, object> data)
     {
         // Add text attribute to all elements with htmt-text="{key}" attribute
-        var selectedNodes = _doc?.SelectNodes("//*[@htmt-inner]", _nsManager);
+        var selectedNodes = _doc?.SelectNodes("//*[@x:inner-text]", _nsManager);
         
         // No nodes found
         if (selectedNodes == null || selectedNodes.Count == 0)
@@ -238,7 +206,7 @@ public class Parser
             if (node is not XmlElement n) continue;
             if (InsideForNode(n)) continue;
 
-            var innerVal = n.GetAttribute("htmt-inner");
+            var innerVal = n.GetAttribute("x:inner-text");
             if (string.IsNullOrEmpty(innerVal)) continue;
             
             var wholeKeyRegex = new Regex(@"\{.*?\}");
@@ -250,14 +218,14 @@ public class Parser
 
             innerVal = wholeKeyRegex.Replace(innerVal, strValue);
             n.InnerText = innerVal;
-            n.RemoveAttribute("htmt-inner");
+            n.RemoveAttribute("x:inner-text");
         }
     }
     
     private void ParseInnerHtmlAttributes(Dictionary<string, object> data)
     {
         // Add text attribute to all elements with htmt-text="{key}" attribute
-        var selectedNodes = _doc?.SelectNodes("//*[@htmt-inner-html]", _nsManager);
+        var selectedNodes = _doc?.SelectNodes("//*[@x:inner-html]", _nsManager);
         
         // No nodes found
         if (selectedNodes == null || selectedNodes.Count == 0)
@@ -270,7 +238,7 @@ public class Parser
             if (node is not XmlElement n) continue;
             if (InsideForNode(n)) continue;
 
-            var innerHtmlVal = n.GetAttribute("htmt-inner-html");
+            var innerHtmlVal = n.GetAttribute("x:inner-html");
             if (string.IsNullOrEmpty(innerHtmlVal)) continue;
             
             var wholeKeyRegex = new Regex(@"\{.*?\}");
@@ -285,7 +253,39 @@ public class Parser
             var xml = new XmlDocument();
             xml.LoadXml($"<root>{innerHtmlVal}</root>");
             n.InnerXml = xml.DocumentElement?.InnerXml ?? string.Empty;
-            n.RemoveAttribute("htmt-inner-html");
+            n.RemoveAttribute("x:inner-html");
+        }
+    }
+    
+    public void ParseOuterTextAttributes(Dictionary<string, object> data)
+    {
+        // Add text attribute to all elements with htmt-text="{key}" attribute
+        var selectedNodes = _doc?.SelectNodes("//*[@x:outer-text]", _nsManager);
+        
+        // No nodes found
+        if (selectedNodes == null || selectedNodes.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var node in selectedNodes)
+        {
+            if (node is not XmlElement n) continue;
+            if (InsideForNode(n)) continue;
+
+            var outerVal = n.GetAttribute("x:outer-text");
+            if (string.IsNullOrEmpty(outerVal)) continue;
+            
+            var wholeKeyRegex = new Regex(@"\{.*?\}");
+            var keyRegex = new Regex(@"(?<=\{)(.*?)(?=\})");
+            var key = keyRegex.Match(outerVal).Value;
+            var keys = key.Split('.');
+            
+            if (FindValueByKeys(data, keys) is not string strValue) continue;
+
+            outerVal = wholeKeyRegex.Replace(outerVal, strValue);
+            n.RemoveAttribute("x:outer-text");
+            ReplaceNode(n, _xml.CreateTextNode(outerVal));
         }
     }
 
@@ -313,34 +313,40 @@ public class Parser
                     keys = newKeys;
                     continue;
                 }
-                case object[] arr:
+                case Dictionary<string, string> dict:
                 {
-                    var dict = new Dictionary<string, object>();
-                    for (var i = 0; i < arr.Length; i++)
-                    {
-                        if (arr[i] is not Dictionary<string, object> d) continue;
-
-                        foreach (var (k, value) in d)
-                        {
-                            dict[$"{i}.{k}"] = value;
-                        }
-                    }
-
                     var newKeys = keys.Skip(1).ToArray();
 
-                    data = dict;
+                    data = dict.ToDictionary(x => x.Key, x => (object)x.Value);
                     keys = newKeys;
                     continue;
                 }
+                case Dictionary<string, int> dict:
+                {
+                    var newKeys = keys.Skip(1).ToArray();
+
+                    data = dict.ToDictionary(x => x.Key, x => (object)x.Value);
+                    keys = newKeys;
+                    continue;
+                }
+                case Dictionary<string, bool> dict:
+                {
+                    var newKeys = keys.Skip(1).ToArray();
+
+                    data = dict.ToDictionary(x => x.Key, x => (object)x.Value);
+                    keys = newKeys;
+                    continue;
+                }
+                
                 default:
                     return null;
             }
         }
     }
 
-    private void ParseIfNodes(Dictionary<string, object> data)
+    private void ParseIfAttributes(Dictionary<string, object> data)
     {
-        var selectedNodes = _doc?.SelectNodes("//htmt:if", _nsManager);
+        var selectedNodes = _doc?.SelectNodes("//*[@x:if]", _nsManager);
 
         // No nodes found
         if (selectedNodes == null || selectedNodes.Count == 0)
@@ -353,11 +359,47 @@ public class Parser
             if (node is not XmlElement n) continue;
             if (InsideForNode(n)) continue;
 
-            var key = n.GetAttribute("key");
+            var key = n.GetAttribute("x:if");
+            n.RemoveAttribute("x:if");
 
             if (!data.TryGetValue(key, out var value)) continue;
             
-            var isTrue = value switch
+            var removeNode = value switch
+            {
+                bool b => !b,
+                int i => i == 0,
+                string s => string.IsNullOrEmpty(s),
+                _ => true
+            };
+            
+            if (removeNode)
+            {
+                n.ParentNode?.RemoveChild(n);
+            }
+        }
+    }
+
+    private void ParseUnlessAttributes(Dictionary<string, object> data)
+    {
+        var selectedNodes = _doc?.SelectNodes("//*[@x:unless]", _nsManager);
+
+        // No nodes found
+        if (selectedNodes == null || selectedNodes.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var node in selectedNodes)
+        {
+            if (node is not XmlElement n) continue;
+            if (InsideForNode(n)) continue;
+
+            var key = n.GetAttribute("x:unless");
+            n.RemoveAttribute("x:unless");
+
+            if (!data.TryGetValue(key, out var value)) continue;
+            
+            var removeNode = value switch
             {
                 bool b => b,
                 int i => i != 0,
@@ -365,64 +407,16 @@ public class Parser
                 _ => false
             };
             
-            // Replace node with its children if the condition is true
-            if (isTrue)
+            if (removeNode)
             {
-                ReplaceNodeWithChildren(n);
-            }
-            else
-            {
-                // Remove node if the condition is false
                 n.ParentNode?.RemoveChild(n);
             }
-
         }
     }
 
-    private void ParseUnlessNodes(Dictionary<string, object> data)
+    private void ParseForAttributes(Dictionary<string, object> data)
     {
-        var selectedNodes = _doc?.SelectNodes("//htmt:unless", _nsManager);
-
-        // No nodes found
-        if (selectedNodes == null || selectedNodes.Count == 0)
-        {
-            return;
-        }
-
-        foreach (var node in selectedNodes)
-        {
-            if (node is not XmlElement n) continue;
-            if (InsideForNode(n)) continue;
-
-            var key = n.GetAttribute("key");
-
-            if (!data.TryGetValue(key, out var value)) continue;
-            
-            var isFalse = value switch
-            {
-                bool b => !b,
-                int i => i == 0,
-                string s => string.IsNullOrEmpty(s),
-                _ => false
-            };
-            
-            // Replace node with its children if the condition is false
-            if (isFalse)
-            {
-                ReplaceNodeWithChildren(n);
-            }
-            else
-            {
-                // Remove node if the condition is true
-                n.ParentNode?.RemoveChild(n);
-            }
-
-        }
-    }
-
-    private void ParseForNodes(Dictionary<string, object> data)
-    {
-        var selectedNodes = _doc?.SelectNodes("//*[@htmt-for]", _nsManager);
+        var selectedNodes = _doc?.SelectNodes("//*[@x:for]", _nsManager);
         
         // No nodes found
         if (selectedNodes == null || selectedNodes.Count == 0)
@@ -434,11 +428,11 @@ public class Parser
         {
             if (node is not XmlElement n) continue;
             
-            var collection = n.GetAttribute("htmt-for");
-            var asVar = n.GetAttribute("htmt-as");
+            var collection = n.GetAttribute("x:for");
+            var asVar = n.GetAttribute("x:as");
             
-            n.RemoveAttribute("htmt-for");
-            n.RemoveAttribute("htmt-as");
+            n.RemoveAttribute("x:for");
+            n.RemoveAttribute("x:as");
             
             var value = FindValueByKeys(data, collection.Split('.'));
             if (value is not IEnumerable<object> enumerable) continue;
@@ -449,7 +443,10 @@ public class Parser
             // Loop through value, and add data where asVar is the key
             foreach (var item in enumerable)
             {
-                data[asVar] = item;
+                if (!string.IsNullOrEmpty(asVar))
+                {
+                    data[asVar] = item;
+                }
 
                 var parser = new Parser(n.OuterXml, _xml);
                 var result = parser.ParseToXml(data);
@@ -466,24 +463,6 @@ public class Parser
             data.Remove(asVar);
         }
     }
-    
-    private static void SwapChildren(XmlElement node, XmlNode replacement)
-    {
-        var children = node.ChildNodes;
-        var replacementChildren = replacement.ChildNodes;
-        
-        // Remove all children from node
-        foreach(XmlNode child in children)
-        {
-            node.RemoveChild(child);
-        }
-        
-        // Add all children from replacement to node
-        foreach(XmlNode child in replacementChildren)
-        {
-            node.AppendChild(child.CloneNode(true));
-        }
-    }
 
     private static bool InsideForNode(XmlElement node)
     {
@@ -491,8 +470,8 @@ public class Parser
         
         while (parent != null)
         {
-            // of the parent is a node with the htmt-for attribute, return true
-            if (parent is XmlElement e && e.HasAttribute("htmt-for"))
+            // if the parent is a node with the x:for attribute, return true
+            if (parent is XmlElement e && e.HasAttribute("x:for"))
             {
                 return true;
             }
@@ -536,13 +515,6 @@ public class Parser
         }
         
         return doc;
-    }
-    
-    private XmlText CreateTextNode(string value)
-    {
-        var textNode = _xml.CreateTextNode(value);
-        
-        return textNode;
     }
     
     private void ReplaceNode(XmlElement node, XmlNode replacement)

@@ -6,7 +6,7 @@ public class ParserTest
     [TestMethod]
     public void TestPrintNodeReplacement()
     {
-        const string template = "<html><body><h2>Hello, <htmt:print key=\"name\" /></h2></body></html>";
+        const string template = "<html><body><h2>Hello, <span x:outer-text=\"{name}\" /></h2></body></html>";
         var data = new Dictionary<string, object> { { "name", "John Doe" } };
         var parser = new Htmt.Parser(template);
         var result = parser.Parse(data);
@@ -17,8 +17,8 @@ public class ParserTest
     [TestMethod]
     public void TestPrintNestedDataNodeReplacement()
     {
-        const string template = "<html><body><h2>Hello, <htmt:print key=\"person.name\" /></h2></body></html>";
-        var data = new Dictionary<string, object> { { "person", new { name = "John Doe" } } };
+        const string template = "<html><body><h2>Hello, <span x:outer-text=\"{person.name}\" /></h2></body></html>";
+        var data = new Dictionary<string, object> { { "person", new Dictionary<string, string> { { "name", "John Doe" } } } }; 
         var parser = new Htmt.Parser(template);
         var result = parser.Parse(data);
         
@@ -28,7 +28,7 @@ public class ParserTest
     [TestMethod]
     public void TestIfNodes()
     {
-        const string template = "<html><body><htmt:if key=\"show\"><h2>Hello, <htmt:print key=\"name\" /></h2></htmt:if></body></html>";
+        const string template = "<html><body><h2 x:if=\"show\">Hello, <span x:outer-text=\"{name}\" /></h2></body></html>";
         var data = new Dictionary<string, object> { { "name", "John Doe" }, { "show", true } };
         var parser = new Htmt.Parser(template);
         var result = parser.Parse(data);
@@ -39,7 +39,7 @@ public class ParserTest
     [TestMethod]
     public void TestIfNotNodes()
     {
-        const string template = "<html><body><htmt:if key=\"show\"><h2>Hello, <htmt:print key=\"name\" /></h2></htmt:if></body></html>";
+        const string template = "<html><body><h2 x:if=\"show\">Hello, <span x:outer-text=\"{name}\" /></h2></body></html>";
         var data = new Dictionary<string, object> { { "name", "John Doe" }, { "show", false } };
         var parser = new Htmt.Parser(template);
         var result = parser.Parse(data);

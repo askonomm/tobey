@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace Htmt;
@@ -42,7 +43,6 @@ public class Parser
         
         // Traverse the XML tree and add unique ID to each node,
         // this is used to identify nodes in the template
-        // and replace them with the correct data
         if (_xml.DocumentElement != null)
         {
             _doc = AddIdentifierToNodes(_xml.DocumentElement);
@@ -69,7 +69,6 @@ public class Parser
         
         // Traverse the XML tree and add unique ID to each node,
         // this is used to identify nodes in the template
-        // and replace them with the correct data
         if (_xml.DocumentElement != null)
         {
             _doc = AddIdentifierToNodes(_xml.DocumentElement);
@@ -137,8 +136,11 @@ public class Parser
         // Parse htmt-href attributes
         ParseHrefAttributes(data);
         
-        // Parse htmt-text attributes
-        ParseTextAttributes(data);
+        // Parse htmt-inner attributes
+        ParseInnerAttributes(data);
+        
+        // Parse htmt-inner-html attributes
+        ParseInnerHtmlAttributes(data);
         
         // Parse If nodes
         ParseIfNodes(data);
@@ -220,102 +222,120 @@ public class Parser
         }
     }
     
-    private void ParseTextAttributes(Dictionary<string, object> data)
+    private void ParseInnerAttributes(Dictionary<string, object> data)
     {
         // Add text attribute to all elements with htmt-text="{key}" attribute
-        var selectedNodes = _doc?.SelectNodes("//*[@htmt-text]", _nsManager);
+        var selectedNodes = _doc?.SelectNodes("//*[@htmt-inner]", _nsManager);
         
         // No nodes found
         if (selectedNodes == null || selectedNodes.Count == 0)
         {
             return;
         }
-        
+
         foreach (var node in selectedNodes)
         {
             if (node is not XmlElement n) continue;
             if (InsideForNode(n)) continue;
+
+            var innerVal = n.GetAttribute("htmt-inner");
+            if (string.IsNullOrEmpty(innerVal)) continue;
             
-            var val = n.GetAttribute("htmt-text");
-            // get str between { and } using regex
             var wholeKeyRegex = new Regex(@"\{.*?\}");
             var keyRegex = new Regex(@"(?<=\{)(.*?)(?=\})");
-            var key = keyRegex.Match(val).Value;
+            var key = keyRegex.Match(innerVal).Value;
             var keys = key.Split('.');
             
-            // Traverse the data dictionary to find the correct value
-            var value = FindValueByKeys(data, keys);
+            if (FindValueByKeys(data, keys) is not string strValue) continue;
 
-            if (value is not string strValue) continue;
-
-            // replace {...} with strValue (including brackets) in val
-            val = wholeKeyRegex.Replace(val, strValue);
-            n.InnerText = val;
-            n.RemoveAttribute("htmt-text");
+            innerVal = wholeKeyRegex.Replace(innerVal, strValue);
+            n.InnerText = innerVal;
+            n.RemoveAttribute("htmt-inner");
         }
     }
     
+    private void ParseInnerHtmlAttributes(Dictionary<string, object> data)
+    {
+        // Add text attribute to all elements with htmt-text="{key}" attribute
+        var selectedNodes = _doc?.SelectNodes("//*[@htmt-inner-html]", _nsManager);
+        
+        // No nodes found
+        if (selectedNodes == null || selectedNodes.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var node in selectedNodes)
+        {
+            if (node is not XmlElement n) continue;
+            if (InsideForNode(n)) continue;
+
+            var innerHtmlVal = n.GetAttribute("htmt-inner-html");
+            if (string.IsNullOrEmpty(innerHtmlVal)) continue;
+            
+            var wholeKeyRegex = new Regex(@"\{.*?\}");
+            var keyRegex = new Regex(@"(?<=\{)(.*?)(?=\})");
+            var key = keyRegex.Match(innerHtmlVal).Value;
+            var keys = key.Split('.');
+            
+            if (FindValueByKeys(data, keys) is not string strValue) continue;
+
+            innerHtmlVal = wholeKeyRegex.Replace(innerHtmlVal, strValue);
+            // convert innerHtmlVal to XML
+            var xml = new XmlDocument();
+            xml.LoadXml($"<root>{innerHtmlVal}</root>");
+            n.InnerXml = xml.DocumentElement?.InnerXml ?? string.Empty;
+            n.RemoveAttribute("htmt-inner-html");
+        }
+    }
+
     private static object? FindValueByKeys(Dictionary<string, object> data, string[] keys)
     {
-        if (!data.TryGetValue(keys.First(), out var v))
+        while (true)
         {
-            return null;
-        }
-        
-        if (keys.Length == 1)
-        {
-            return v;
-        }
-
-        switch (v)
-        {
-            // if is of type AnonymousType[], convert to Dictionary<string, object>
-            case Dictionary<string, object> dict:
+            if (!data.TryGetValue(keys.First(), out var v))
             {
-                var newKeys = keys.Skip(1).ToArray();
-
-                return FindValueByKeys(dict, newKeys);
+                return null;
             }
-            case object[] arr:
+
+            if (keys.Length == 1)
             {
-                var dict = new Dictionary<string, object>();
-                for (var i = 0; i < arr.Length; i++)
+                return v;
+            }
+
+            switch (v)
+            {
+                case Dictionary<string, object> dict:
                 {
-                    if (arr[i] is not Dictionary<string, object> d) continue;
-                    
-                    foreach (var (k, value) in d)
-                    {
-                        dict[$"{i}.{k}"] = value;
-                    }
+                    var newKeys = keys.Skip(1).ToArray();
+
+                    data = dict;
+                    keys = newKeys;
+                    continue;
                 }
-
-                var newKeys = keys.Skip(1).ToArray();
-
-                return FindValueByKeys(dict, newKeys);
-            }
-            case not null:
-            {
-                // if is of type AnonymousType, convert to Dictionary<string, object>
-                if (v.GetType().Name.Contains("AnonymousType"))
+                case object[] arr:
                 {
                     var dict = new Dictionary<string, object>();
-                    foreach (var property in v.GetType().GetProperties())
+                    for (var i = 0; i < arr.Length; i++)
                     {
-                        dict[property.Name] = property.GetValue(v) ?? string.Empty;
+                        if (arr[i] is not Dictionary<string, object> d) continue;
+
+                        foreach (var (k, value) in d)
+                        {
+                            dict[$"{i}.{k}"] = value;
+                        }
                     }
 
                     var newKeys = keys.Skip(1).ToArray();
 
-                    return FindValueByKeys(dict, newKeys);
+                    data = dict;
+                    keys = newKeys;
+                    continue;
                 }
-
-                break;
+                default:
+                    return null;
             }
-            default:
-                return null;
         }
-        
-        return null;
     }
 
     private void ParseIfNodes(Dictionary<string, object> data)
@@ -416,48 +436,31 @@ public class Parser
             
             var collection = n.GetAttribute("htmt-for");
             var asVar = n.GetAttribute("htmt-as");
+            
+            n.RemoveAttribute("htmt-for");
+            n.RemoveAttribute("htmt-as");
+            
             var value = FindValueByKeys(data, collection.Split('.'));
-            
             if (value is not IEnumerable<object> enumerable) continue;
-            
-            var children = n.ChildNodes;
-            
-            // No point in continuing if there are no children
-            if (children.Count == 0)
-            {
-                return;
-            }
 
             // Create document fragment
-            var updatedNode = _xml.CreateDocumentFragment();
+            var fragment = _xml.CreateDocumentFragment();
             
             // Loop through value, and add data where asVar is the key
             foreach (var item in enumerable)
             {
                 data[asVar] = item;
-                
-                // Create a new node that contains all the children
-                var childrenContainer = _xml.CreateDocumentFragment();
-                
-                foreach (XmlNode child in children)
-                {
-                    childrenContainer.AppendChild(child.CloneNode(true));
-                }
-                
-                var parser = new Parser(childrenContainer.OuterXml, _xml);
+
+                var parser = new Parser(n.OuterXml, _xml);
                 var result = parser.ParseToXml(data);
                 
                 if (result == null) continue;
                 
-                updatedNode.AppendChild(result);
+                fragment.AppendChild(result);
             }
             
             // Replace n child nodes with updatedNode child nodes
-            SwapChildren(n, updatedNode);
-            
-            // Remove htmt-for and htmt-as attributes
-            n.RemoveAttribute("htmt-for");
-            n.RemoveAttribute("htmt-as");
+            ReplaceNode(n, fragment);
             
             // Remove the asVar key from the data dictionary
             data.Remove(asVar);
@@ -470,15 +473,15 @@ public class Parser
         var replacementChildren = replacement.ChildNodes;
         
         // Remove all children from node
-        for (var i = children.Count - 1; i >= 0; i--)
+        foreach(XmlNode child in children)
         {
-            node.RemoveChild(children[i] ?? node.OwnerDocument.CreateTextNode(""));
+            node.RemoveChild(child);
         }
         
         // Add all children from replacement to node
-        for (var i = 0; i < replacementChildren.Count; i++)
+        foreach(XmlNode child in replacementChildren)
         {
-            node.AppendChild(replacementChildren[i] ?? node.OwnerDocument.CreateTextNode(""));
+            node.AppendChild(child.CloneNode(true));
         }
     }
 

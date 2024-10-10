@@ -106,7 +106,7 @@ namespace Tobey
                 }
                 
                 var templateContent = File.ReadAllText(templatePath);
-                var html = new Parser(templateContent).Parse(item);
+                var html = new Parser { Template = templateContent, Data = item }.ToHtml();
                 var outputPath = Path.Combine(path, "output", writeTo);
                 var directoryPath = Path.GetDirectoryName(outputPath);
                 

@@ -6,7 +6,7 @@ public class ForAttributeParser : IAttributeParser
 {
     public string Name => "for";
     
-    public void Parse(Parser parser, XmlNodeList? nodes)
+    public void Parse(XmlDocument xml, Dictionary<string, object> data, XmlNodeList? nodes)
     {
         // No nodes found
         if (nodes == null || nodes.Count == 0)
@@ -24,27 +24,24 @@ public class ForAttributeParser : IAttributeParser
             n.RemoveAttribute("x:for");
             n.RemoveAttribute("x:as");
             
-            var value = parser.FindValueByKeys(collection.Split('.'));
+            var value = Helper.FindValueByKeys(data, collection.Split('.'));
             if (value is not IEnumerable<object> enumerable) continue;
 
-            var fragment = parser.Xml.CreateDocumentFragment();
-            var outer = n.OuterXml;
+            var fragment = xml.CreateDocumentFragment();
 
             foreach (var item in enumerable)
             {
-                var data = new Dictionary<string, object>(parser.Data);
+                var iterationData = new Dictionary<string, object>(data);
                 
                 if (!string.IsNullOrEmpty(asVar))
                 {
-                    data[asVar] = item;
+                    iterationData[asVar] = item;
                 }
                 
-                var iterationParser = new Parser { Template = outer, Data = data};
+                var iterationParser = new Parser { Template = n.OuterXml, Data = iterationData};
                 var itemXml = iterationParser.ToXml();
+                var importedNode = xml.ImportNode(itemXml, true);
                 
-                if (itemXml == null) continue;
-                
-                var importedNode = parser.Xml.ImportNode(itemXml, true);
                 fragment.AppendChild(importedNode);
             }
             

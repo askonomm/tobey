@@ -13,7 +13,7 @@ public partial class InnerTextAttributeParser : IAttributeParser
     [GeneratedRegex(@"(?<=\{)(.*?)(?=\})")]
     private static partial Regex KeyRegex();
     
-    public void Parse(Parser parser, XmlNodeList? nodes)
+    public void Parse(XmlDocument xml, Dictionary<string, object> data, XmlNodeList? nodes)
     {
         // No nodes found
         if (nodes == null || nodes.Count == 0)
@@ -33,7 +33,7 @@ public partial class InnerTextAttributeParser : IAttributeParser
             var key = keyRegex.Match(innerVal).Value;
             var keys = key.Split('.');
             
-            if (parser.FindValueByKeys(keys) is not string strValue) continue;
+            if (Helper.FindValueByKeys(data, keys) is not string strValue) continue;
 
             innerVal = wholeKeyRegex.Replace(innerVal, strValue);
             n.InnerText = innerVal;

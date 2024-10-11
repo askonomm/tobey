@@ -12,7 +12,7 @@ public class Parser
 
     public Dictionary<string, object> Data { get; init; } = new();
 
-    public IAttributeParser[]? AttributeParsers { get; init; }
+    public IAttributeParser[] AttributeParsers { get; init; } = [];
     
     private XmlNamespaceManager _nsManager = null!;
     
@@ -39,10 +39,10 @@ public class Parser
         if (IsHtml(Template))
         {
             _isHtml = true;
-            _docType = GetDoctype(Template ?? string.Empty);
+            _docType = GetDoctype(Template);
         }
         
-        var templateWithoutDoctype = RemoveDoctype(Template ?? string.Empty);
+        var templateWithoutDoctype = RemoveDoctype(Template);
         var templateStr = $"<root xmlns:x=\"{HtmtNamespace}\">{templateWithoutDoctype}</root>";
         using var reader = XmlReader.Create(new StringReader(templateStr), _xmlSettings);
         Xml.Load(reader);
@@ -100,7 +100,7 @@ public class Parser
         return Xml.DocumentElement.FirstChild?.OuterXml ?? string.Empty;
     }
     
-    public XmlNode? ToXml()
+    public XmlNode ToXml()
     {
         Parse();
         
@@ -111,7 +111,7 @@ public class Parser
     {
         var parsers = AttributeParsers;
         
-        if (parsers == null || parsers.Length == 0)
+        if (parsers.Length == 0)
         {
             parsers = DefaultAttributeParsers();
         }
@@ -119,65 +119,8 @@ public class Parser
         foreach(var parser in parsers)
         {
             var nodes = Xml.DocumentElement?.SelectNodes($"//*[@x:{parser.Name}]", _nsManager);
-            
-            parser.Parse(this, nodes);
-        }
-    }
-    
-    public object? FindValueByKeys(string[] keys)
-    {
-        var data = new Dictionary<string, object>(Data);
-        
-        while (true)
-        {
-            if (!data.TryGetValue(keys.First(), out var v))
-            {
-                return null;
-            }
-
-            if (keys.Length == 1)
-            {
-                return v;
-            }
-
-            switch (v)
-            {
-                case Dictionary<string, object> dict:
-                {
-                    var newKeys = keys.Skip(1).ToArray();
-
-                    data = dict;
-                    keys = newKeys;
-                    continue;
-                }
-                case Dictionary<string, string> dict:
-                {
-                    var newKeys = keys.Skip(1).ToArray();
-
-                    data = dict.ToDictionary(x => x.Key, x => (object)x.Value);
-                    keys = newKeys;
-                    continue;
-                }
-                case Dictionary<string, int> dict:
-                {
-                    var newKeys = keys.Skip(1).ToArray();
-
-                    data = dict.ToDictionary(x => x.Key, x => (object)x.Value);
-                    keys = newKeys;
-                    continue;
-                }
-                case Dictionary<string, bool> dict:
-                {
-                    var newKeys = keys.Skip(1).ToArray();
-
-                    data = dict.ToDictionary(x => x.Key, x => (object)x.Value);
-                    keys = newKeys;
-                    continue;
-                }
-                
-                default:
-                    return null;
-            }
+            var clonedData = new Dictionary<string, object>(Data);
+            parser.Parse(Xml, clonedData, nodes);
         }
     }
 

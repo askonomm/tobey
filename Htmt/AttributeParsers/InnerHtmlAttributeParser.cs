@@ -7,7 +7,7 @@ public class InnerHtmlAttributeParser: IAttributeParser
 {
     public string Name => "inner-html";
     
-    public void Parse(Parser parser, XmlNodeList? nodes)
+    public void Parse(XmlDocument xml, Dictionary<string, object> data, XmlNodeList? nodes)
     {
         // No nodes found
         if (nodes == null || nodes.Count == 0)
@@ -27,13 +27,13 @@ public class InnerHtmlAttributeParser: IAttributeParser
             var key = keyRegex.Match(innerHtmlVal).Value;
             var keys = key.Split('.');
             
-            if (parser.FindValueByKeys(keys) is not string strValue) continue;
+            if (Helper.FindValueByKeys(data, keys) is not string strValue) continue;
 
             innerHtmlVal = wholeKeyRegex.Replace(innerHtmlVal, strValue);
             // convert innerHtmlVal to XML
-            var xml = new XmlDocument();
-            xml.LoadXml($"<root>{innerHtmlVal}</root>");
-            n.InnerXml = xml.DocumentElement?.InnerXml ?? string.Empty;
+            var innerXml = new XmlDocument();
+            innerXml.LoadXml($"<root>{innerHtmlVal}</root>");
+            n.InnerXml = innerXml.DocumentElement?.InnerXml ?? string.Empty;
             n.RemoveAttribute("x:inner-html");
         }
     }

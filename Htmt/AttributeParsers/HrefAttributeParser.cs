@@ -7,7 +7,7 @@ public class HrefAttributeParser : IAttributeParser
 {
     public string Name => "href";
 
-    public void Parse(Parser parser, XmlNodeList? nodes)
+    public void Parse(XmlDocument xml, Dictionary<string, object> data, XmlNodeList? nodes)
     {
         // No nodes found
         if (nodes == null || nodes.Count == 0)
@@ -25,7 +25,7 @@ public class HrefAttributeParser : IAttributeParser
             var key = keyRegex.Match(val).Value;
             var keys = key.Split('.');
             
-            var value = parser.FindValueByKeys(keys);
+            var value = Helper.FindValueByKeys(data, keys);
             
             if (value is not string strValue)
             {

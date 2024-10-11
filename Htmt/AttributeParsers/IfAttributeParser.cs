@@ -6,7 +6,7 @@ public class IfAttributeParser : IAttributeParser
 {
     public string Name => "if";
     
-    public void Parse(Parser parser, XmlNodeList? nodes)
+    public void Parse(XmlDocument xml, Dictionary<string, object> data, XmlNodeList? nodes)
     {
         // No nodes found
         if (nodes == null || nodes.Count == 0)
@@ -21,7 +21,7 @@ public class IfAttributeParser : IAttributeParser
             var key = n.GetAttribute("x:if");
             n.RemoveAttribute("x:if");
 
-            var value = parser.FindValueByKeys(key.Split('.'));
+            var value = Helper.FindValueByKeys(data, key.Split('.'));
             
             if(value == null) continue;
             

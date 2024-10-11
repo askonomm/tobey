@@ -7,7 +7,7 @@ public class OuterTextAttributeParser : IAttributeParser
 {
     public string Name => "outer-text";
     
-    public void Parse(Parser parser, XmlNodeList? nodes)
+    public void Parse(XmlDocument xml, Dictionary<string, object> data, XmlNodeList? nodes)
     {
         // No nodes found
         if (nodes == null || nodes.Count == 0)
@@ -28,11 +28,11 @@ public class OuterTextAttributeParser : IAttributeParser
             var key = keyRegex.Match(outerVal).Value;
             var keys = key.Split('.');
             
-            if (parser.FindValueByKeys(keys) is not string strValue) continue;
+            if (Helper.FindValueByKeys(data, keys) is not string strValue) continue;
 
             outerVal = wholeKeyRegex.Replace(outerVal, strValue);
             n.RemoveAttribute("x:outer-text");
-            n.ParentNode?.ReplaceChild(parser.Xml.CreateTextNode(outerVal), n);
+            n.ParentNode?.ReplaceChild(xml.CreateTextNode(outerVal), n);
         }
     }
 }

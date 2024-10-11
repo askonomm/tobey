@@ -6,7 +6,7 @@ namespace Htmt.AttributeParsers;
 public class HrefAttributeParser : IAttributeParser
 {
     public string Name => "href";
-
+    
     public void Parse(XmlDocument xml, Dictionary<string, object> data, XmlNodeList? nodes)
     {
         // No nodes found
@@ -19,22 +19,9 @@ public class HrefAttributeParser : IAttributeParser
         {
             if (node is not XmlElement n) continue;
             
-            var val = n.GetAttribute("x:href");
-            var wholeKeyRegex = new Regex(@"\{.*?\}");
-            var keyRegex = new Regex(@"(?<=\{)(.*?)(?=\})");
-            var key = keyRegex.Match(val).Value;
-            var keys = key.Split('.');
+            var val = Helper.GetAttributeValue(n, Name);
             
-            var value = Helper.FindValueByKeys(data, keys);
-            
-            if (value is not string strValue)
-            {
-                strValue = value?.ToString() ?? string.Empty;
-            }
-
-            val = wholeKeyRegex.Replace(val, strValue);
-            n.SetAttribute("href", val);
-            n.RemoveAttribute("x:href");
+            n.SetAttribute("href", Helper.ReplaceKeysWithData(val, data));
         }
     }
 }

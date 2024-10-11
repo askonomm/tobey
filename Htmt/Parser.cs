@@ -56,13 +56,14 @@ public class Parser
     {
         return
         [
+            new ForAttributeParser(),
             new InnerTextAttributeParser(),
             new OuterTextAttributeParser(),
             new InnerHtmlAttributeParser(),
+            new OuterHtmlAttributeParser(),
             new HrefAttributeParser(),
             new IfAttributeParser(),
             new UnlessAttributeParser(),
-            new ForAttributeParser()
         ];
     }
     
@@ -121,6 +122,16 @@ public class Parser
             var nodes = Xml.DocumentElement?.SelectNodes($"//*[@x:{parser.Name}]", _nsManager);
             var clonedData = new Dictionary<string, object>(Data);
             parser.Parse(Xml, clonedData, nodes);
+            
+            // Clean up named attributes
+            if (nodes == null) continue;
+            
+            foreach (var node in nodes)
+            {
+                if (node is not XmlElement n) continue;
+                
+                n.RemoveAttribute($"x:{parser.Name}");
+            }
         }
     }
 

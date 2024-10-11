@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace Htmt.AttributeParsers;
 
-public class OuterTextAttributeParser : IAttributeParser
+public partial class OuterTextAttributeParser : IAttributeParser
 {
     public string Name => "outer-text";
     
@@ -19,19 +19,11 @@ public class OuterTextAttributeParser : IAttributeParser
         {
             if (node is not XmlElement n) continue;
 
-            var outerVal = n.GetAttribute("x:outer-text");
+            var outerVal = Helper.GetAttributeValue(n, Name);
             
             if (string.IsNullOrEmpty(outerVal)) continue;
             
-            var wholeKeyRegex = new Regex(@"\{.*?\}");
-            var keyRegex = new Regex(@"(?<=\{)(.*?)(?=\})");
-            var key = keyRegex.Match(outerVal).Value;
-            var keys = key.Split('.');
-            
-            if (Helper.FindValueByKeys(data, keys) is not string strValue) continue;
-
-            outerVal = wholeKeyRegex.Replace(outerVal, strValue);
-            n.RemoveAttribute("x:outer-text");
+            outerVal = Helper.ReplaceKeysWithData(outerVal, data);
             n.ParentNode?.ReplaceChild(xml.CreateTextNode(outerVal), n);
         }
     }

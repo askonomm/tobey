@@ -18,9 +18,7 @@ public class UnlessAttributeParser : IAttributeParser
         {
             if (node is not XmlElement n) continue;
 
-            var key = n.GetAttribute("x:unless");
-            n.RemoveAttribute("x:unless");
-            
+            var key = Helper.GetAttributeValue(n, Name);
             var value = Helper.FindValueByKeys(data, key.Split('.'));
             
             if(value == null) continue;

@@ -60,6 +60,17 @@ public class AttributeParserTest
     }
     
     [TestMethod]
+    public void TestOuterHtmlAttributeParser()
+    {
+        const string template = "<html><body><div x:outer-html=\"{content}\"></div></body></html>";
+        var data = new Dictionary<string, object> { { "content", "<h1>Hello, World!</h1>" } };
+        var parser = new Parser { Template = template, Data = data };
+        var html = parser.ToHtml();
+        
+        Assert.AreEqual("<html><body><h1>Hello, World!</h1></body></html>", html);
+    }
+    
+    [TestMethod]
     public void TestIfAttributeParser()
     {
         const string template = "<html><body><h1 x:if=\"show\" x:inner-text=\"{title}\"></h1></body></html>";

@@ -19,22 +19,13 @@ public class InnerHtmlAttributeParser: IAttributeParser
         {
             if (node is not XmlElement n) continue;
 
-            var innerHtmlVal = n.GetAttribute("x:inner-html");
+            var innerHtmlVal = Helper.GetAttributeValue(n, Name);
+            
             if (string.IsNullOrEmpty(innerHtmlVal)) continue;
             
-            var wholeKeyRegex = new Regex(@"\{.*?\}");
-            var keyRegex = new Regex(@"(?<=\{)(.*?)(?=\})");
-            var key = keyRegex.Match(innerHtmlVal).Value;
-            var keys = key.Split('.');
-            
-            if (Helper.FindValueByKeys(data, keys) is not string strValue) continue;
-
-            innerHtmlVal = wholeKeyRegex.Replace(innerHtmlVal, strValue);
-            // convert innerHtmlVal to XML
             var innerXml = new XmlDocument();
-            innerXml.LoadXml($"<root>{innerHtmlVal}</root>");
+            innerXml.LoadXml($"<root>{Helper.ReplaceKeysWithData(innerHtmlVal, data)}</root>");
             n.InnerXml = innerXml.DocumentElement?.InnerXml ?? string.Empty;
-            n.RemoveAttribute("x:inner-html");
         }
     }
 }

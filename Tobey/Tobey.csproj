@@ -11,7 +11,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FrontMatter\FrontMatter.csproj" />
-      <ProjectReference Include="..\Htmt\Htmt.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Htmt" Version="1.0.1" />
     </ItemGroup>
 
 </Project>

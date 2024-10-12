@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Htmt" Version="1.0.1" />
+      <PackageReference Include="Htmt" Version="1.1.0" />
     </ItemGroup>
 
 </Project>

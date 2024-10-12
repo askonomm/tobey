@@ -36,7 +36,7 @@
             // Create a list of identified blocks
             var identifiedBlocks = new List<Block>();
 
-            for (int i = 0; i < blocks.Length; i++)
+            for (var i = 0; i < blocks.Length; i++)
             {
                 var block = blocks[i];
                 var identifier = blockIdentifiers.FirstOrDefault(x => x.Identifies(i, blocks));

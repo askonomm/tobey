@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Markdown\Markdown.csproj" />
-      <ProjectReference Include="..\YAML\YAML.csproj" />
     </ItemGroup>
 
 </Project>

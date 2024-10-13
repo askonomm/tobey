@@ -11,7 +11,7 @@
             }
             else
             {
-                Compiler.Compile("C:\\Users\\askon\\Code\\faultd.com");
+                Compiler.Compile(".");
             }
         }
     }

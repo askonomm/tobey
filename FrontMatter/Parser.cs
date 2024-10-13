@@ -9,7 +9,7 @@ public class Parser
             throw new Exception("The text does not conform to the structure of FrontMatter.");
         }
 
-        var lines = text.Split("\r\n").Select(x => x.Trim()).ToArray();
+        var lines = text.Split("\r\n").Select(x => x).ToArray();
         var blockStart = Array.IndexOf(lines, "---");
         var blockEnd = Array.IndexOf(lines, "---", 1);
         var dataLines = lines[(blockStart + 1)..blockEnd];

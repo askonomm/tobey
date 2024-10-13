@@ -97,7 +97,7 @@ namespace Tobey
                     return;
                 }
                 
-                var templatePath = Path.Combine(path, "layouts", templateStr);
+                var templatePath = Path.Combine(path, "templates", templateStr);
                 
                 if (!File.Exists(templatePath))
                 {

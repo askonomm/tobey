@@ -17,7 +17,7 @@ public class Parser
         
         foreach (var line in dataLines)
         {
-            var parts = line.Split(":");
+            var parts = line.Trim().Split(":");
             var keys = parts[0].Trim().Split('.');
             var value = ParseValue(parts[1].Trim());
             var current = data;

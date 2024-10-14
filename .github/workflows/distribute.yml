@@ -7,7 +7,7 @@ on:
         - '*'
           
 jobs:
-  distribute:
+  build-windows:
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -22,11 +22,51 @@ jobs:
       - name: Publish
         run: dotnet publish Tobey/Tobey.csproj /p:Configuration=Release /p:PublishProfile=FolderProfile -o publish
 
-      - name: Distribute
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Tobey.exe
           path: publish/Tobey.exe
+          
+  
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Install dependencies
+        run: dotnet restore
+        
+      - name: Build
+        run: dotnet publish Tobey/Tobey.csproj /p:Configuration=Release /p:PublishProfile=FolderProfile -o build
+          
+      - name: Publish
+        run: dotnet publish Tobey/Tobey.csproj /p:Configuration=Release /p:PublishProfile=FolderProfile -o publish
+        
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tobey
+          path: publish/Tobey
+          
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Tobey.exe
+      
+      - name: Download Linux Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Tobey
           
       - name: Create GitHub Release
         id: create_release
@@ -35,4 +75,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           make_latest: true
-          files: "publish/Tobey.exe"
+          files: "publish/Tobey.exe, publish/Tobey"

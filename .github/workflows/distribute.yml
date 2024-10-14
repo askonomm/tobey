@@ -8,6 +8,9 @@ on:
           
 jobs:
   build-windows:
+    strategy:
+      matrix:
+        targetplatform: [ x64 ]
     runs-on: windows-latest
     steps:
       - name: Checkout code

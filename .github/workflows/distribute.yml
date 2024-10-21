@@ -80,4 +80,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           make_latest: true
-          files: "publish/Tobey.exe, publish/Tobey"
+          files: |
+            Tobey.exe
+            Tobey

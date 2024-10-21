@@ -20,7 +20,7 @@ namespace Tobey
             MoveAssets(path);
         }
 
-        private static List<Dictionary<string, object>> ComposeContent(string path)
+        private static List<Dictionary<string, object?>> ComposeContent(string path)
         {
             // get all .md files from path recursively
             var contentPath = Path.Combine(path, "content");
@@ -34,7 +34,7 @@ namespace Tobey
             }
 
             // compose content of all files
-            var content = new ConcurrentBag<Dictionary<string, object>>();
+            var content = new ConcurrentBag<Dictionary<string, object?>>();
 
             Parallel.ForEach(files, file =>
             {
@@ -49,7 +49,7 @@ namespace Tobey
             return [.. content];
         }
 
-        private static List<Dictionary<string, object>> AttachComposerData(List<Dictionary<string, object>> content)
+        private static List<Dictionary<string, object?>> AttachComposerData(List<Dictionary<string, object?>> content)
         {
             var newContent = content;
 
@@ -57,7 +57,7 @@ namespace Tobey
             {
                 var item = newContent[i];
                 
-                if (!item.TryGetValue("composer", out var composer) || composer is not Dictionary<string, object> composerDict)
+                if (!item.TryGetValue("composer", out var composer) || composer is not Dictionary<string, object?> composerDict)
                 {
                     return;
                 }
@@ -66,7 +66,7 @@ namespace Tobey
                 
                 foreach (var key in composerDict.Keys)
                 {
-                    if (composerDict[key] is not Dictionary<string, object> v)
+                    if (composerDict[key] is not Dictionary<string, object?> v)
                     {
                         continue;
                     }
@@ -83,7 +83,7 @@ namespace Tobey
             return newContent;
         }
 
-        private static void Write(string path, List<Dictionary<string, object>> content)
+        private static void Write(string path, List<Dictionary<string, object?>> content)
         {
             Parallel.ForEach(content, item =>
             {

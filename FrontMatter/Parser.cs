@@ -2,7 +2,7 @@
 
 public class Parser
 {
-    public static Dictionary<string, object> Parse(string text)
+    public static Dictionary<string, object?> Parse(string text)
     {
         if (!ConformsToStructure(text))
         {
@@ -13,7 +13,7 @@ public class Parser
         var blockStart = Array.IndexOf(lines, "---");
         var blockEnd = Array.IndexOf(lines, "---", 1);
         var dataLines = lines[(blockStart + 1)..blockEnd];
-        var data = new Dictionary<string, object>();
+        var data = new Dictionary<string, object?>();
         
         foreach (var line in dataLines)
         {
@@ -35,8 +35,11 @@ public class Parser
                     {
                         current[key] = new Dictionary<string, object>();
                     }
-
-                    current = (Dictionary<string, object>) current[key];
+                    
+                    if (current[key] is Dictionary<string, object?> dict)
+                    {
+                        current = dict;
+                    }
                 }
             }
         }
@@ -74,7 +77,7 @@ public class Parser
         return value;
     }
 
-    public static bool ConformsToStructure(string text)
+    private static bool ConformsToStructure(string text)
     {
         var lines = text.Split("\r\n").Select(x => x.Trim()).ToArray();
         var yamlStart = Array.IndexOf(lines, "---");

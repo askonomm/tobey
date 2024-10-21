@@ -1,10 +1,10 @@
 ﻿namespace Tobey;
 
-public class DataComposer(List<Dictionary<string, object>> content)
+public class DataComposer(List<Dictionary<string, object?>> content)
 {
     private readonly List<string> _specialKeys = ["sort_by", "sort_order", "limit", "offset"];
 
-    public List<Dictionary<string, object>> Compose(Dictionary<string, object> val)
+    public List<Dictionary<string, object?>> Compose(Dictionary<string, object?> val)
     {
         var filterVal = val.Where(x => !_specialKeys.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
         var newContent = content.Where(c => MeetsConditions(c, filterVal)).ToList();
@@ -51,7 +51,7 @@ public class DataComposer(List<Dictionary<string, object>> content)
         return newContent;
     }
 
-    private static bool MeetsConditions(Dictionary<string, object> item, Dictionary<string, object> val)
+    private static bool MeetsConditions(Dictionary<string, object?> item, Dictionary<string, object?> val)
     {
         var conditionsCount = val.Count;
         var conditionsMet = 0;

@@ -2,7 +2,7 @@
 
 public class Watcher
 {
-    private static Timer _debounceTimer;
+    private static Timer? _debounceTimer;
     
     public static void Watch(string path, Action callback)
     {

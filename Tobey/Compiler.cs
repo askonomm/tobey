@@ -100,18 +100,54 @@ public class Compiler
             return;
         }
         
-        var files = Directory.GetFiles(templatesPath, "*");
-        Dictionary<string, string> partials = new();
+        var files = Directory.GetFiles(templatesPath, "*", SearchOption.AllDirectories);
+        Dictionary<string, object?> partials = new();
 
         foreach (var file in files)
         {
             var contents = File.ReadAllText(file);
-            partials.Add(Path.GetFileNameWithoutExtension(file), contents);
+            var relativePath = Path.GetRelativePath(templatesPath, file);
+            var partialName = relativePath.Replace(Path.GetExtension(file), "");
+            
+            // replace forward or backward slashes with a dot
+            partialName = partialName.Replace("/", ".").Replace("\\", ".");
+            
+            var partialKeys = partialName.Split('.');
+            
+            // add to `partials` as nested object based on the `partialKeys`
+            // e.g ['a', 'b', 'c'] would be { a: { b: { c: contents } } }
+            var current = partials;
+            
+            for (var i = 0; i < partialKeys.Length; i++)
+            {
+                var key = partialKeys[i];
+                
+                if (i == partialKeys.Length - 1)
+                {
+                    current.Add(key, contents);
+                }
+                else
+                {
+                    if (!current.TryGetValue(key, out var value))
+                    {
+                        value = new Dictionary<string, object?>();
+                        current.Add(key, value);
+                    }
+                    
+                    if (value is Dictionary<string, object?> dict)
+                    {
+                        current = dict;
+                    }
+                }
+            }
         }
         
         foreach (var item in _content)
         {
-            item.Add("partials", partials);
+            foreach (var partial in partials)
+            {
+                item.Add(partial.Key, partial.Value);
+            }
         }
     }
 
@@ -137,8 +173,9 @@ public class Compiler
                 return;
             }
             
+            var itemCopy = new Dictionary<string, object?>(item);
             var templateContent = File.ReadAllText(templatePath);
-            var html = new Parser { Template = templateContent, Data = item }.ToHtml();
+            var html = new Parser { Template = templateContent, Data = itemCopy }.ToHtml();
             var outputPath = Path.Combine(Dir, "output", writeTo);
             var directoryPath = Path.GetDirectoryName(outputPath);
             

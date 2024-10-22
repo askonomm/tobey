@@ -21,17 +21,14 @@ public class DataComposer(List<Dictionary<string, object?>> content)
         // order the content
         if (val.TryGetValue("sort_order", out var order))
         {
-            if (order is string orderStr)
+            if (order is "desc")
             {
-                if (orderStr == "desc")
-                {
-                    newContent.Reverse();
-                }
+                newContent.Reverse();
             }
         }
 
         // offset the content
-        if (val.TryGetValue("offset", out object? offset))
+        if (val.TryGetValue("offset", out var offset))
         {
             if (offset is int offsetInt)
             {
@@ -40,12 +37,11 @@ public class DataComposer(List<Dictionary<string, object?>> content)
         }
 
         // limit the content
-        if (val.TryGetValue("limit", out object? limit))
+        if (!val.TryGetValue("limit", out var limit)) return newContent;
+        
+        if (limit is int limitInt)
         {
-            if (limit is int limitInt)
-            {
-                newContent = newContent[..limitInt];
-            }
+            newContent = newContent[..limitInt];
         }
 
         return newContent;
@@ -58,45 +54,44 @@ public class DataComposer(List<Dictionary<string, object?>> content)
 
         foreach (var (k, v) in val)
         {
-            if (item.TryGetValue(k, out var value))
+            if (!item.TryGetValue(k, out var value)) continue;
+            
+            // is the value a string and the condition a string?
+            if (value is string && v is string)
             {
-                // is the value a string and the condition a string?
-                if (value is string && v is string)
+                if (value.Equals(v))
                 {
-                    if (value.Equals(v))
-                    {
-                        conditionsMet++;
-                        continue;
-                    }
+                    conditionsMet++;
+                    continue;
                 }
+            }
 
-                // is the value a int and the condition a int?
-                if (value is int && v is int)
+            // is the value a int and the condition a int?
+            if (value is int && v is int)
+            {
+                if (value.Equals(v))
                 {
-                    if (value.Equals(v))
-                    {
-                        conditionsMet++;
-                        continue;
-                    }
+                    conditionsMet++;
+                    continue;
                 }
+            }
 
-                // is the value a double and the condition a double?
-                if (value is double && v is double)
+            // is the value a double and the condition a double?
+            if (value is double && v is double)
+            {
+                if (value.Equals(v))
                 {
-                    if (value.Equals(v))
-                    {
-                        conditionsMet++;
-                        continue;
-                    }
+                    conditionsMet++;
+                    continue;
                 }
+            }
 
-                // is the value a bool and the condition a bool?
-                if (value is bool && v is bool)
+            // is the value a bool and the condition a bool?
+            if (value is bool && v is bool)
+            {
+                if (value.Equals(v))
                 {
-                    if (value.Equals(v))
-                    {
-                        conditionsMet++;
-                    }
+                    conditionsMet++;
                 }
             }
         }

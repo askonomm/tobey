@@ -49,7 +49,8 @@ public class Watcher
 
         Console.WriteLine($"File: {e.OldFullPath} renamed to {e.FullPath}");
 
-        callback();
+        _debounceTimer?.Dispose();
+        _debounceTimer = new Timer(_ => callback(), null, 500, Timeout.Infinite);
     }
 
     private static void OnDeleted(object _, FileSystemEventArgs e, Action callback)
@@ -62,7 +63,8 @@ public class Watcher
 
         Console.WriteLine($"File: {e.FullPath} deleted");
 
-        callback();
+        _debounceTimer?.Dispose();
+        _debounceTimer = new Timer(_ => callback(), null, 500, Timeout.Infinite);
     }
 
     private static void OnCreated(object _, FileSystemEventArgs e, Action callback)
@@ -75,6 +77,7 @@ public class Watcher
 
         Console.WriteLine($"File: {e.FullPath} created");
 
-        callback();
+        _debounceTimer?.Dispose();
+        _debounceTimer = new Timer(_ => callback(), null, 500, Timeout.Infinite);
     }
 }

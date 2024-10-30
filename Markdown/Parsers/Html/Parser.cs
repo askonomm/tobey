@@ -16,8 +16,8 @@
             // Stitch blocks
             // TODO: make it configurable
             var blockStitchers = new List<IBlockStitcher> {
-            new Stitchers.Code()
-        };
+                new Stitchers.Code()
+            };
 
             foreach (var stitcher in blockStitchers)
             {

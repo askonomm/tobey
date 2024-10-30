@@ -6,6 +6,6 @@ public class Heading : IBlockIdentifier
     
     public bool Identifies(int currentBlock, string[] blocks)
     {
-        return blocks.ElementAt(currentBlock).StartsWith("# ");
+        return blocks.ElementAt(currentBlock).StartsWith('#');
     }
 }

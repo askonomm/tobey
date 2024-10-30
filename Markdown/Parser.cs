@@ -9,11 +9,11 @@
         {
             return [
                 new Identifiers.Block.Code(),
-            new Identifiers.Block.List(),
-            new Identifiers.Block.Heading(),
-            new Identifiers.Block.HorizontalLine(),
-            new Identifiers.Block.Paragraph(),
-        ];
+                new Identifiers.Block.List(),
+                new Identifiers.Block.Heading(),
+                new Identifiers.Block.HorizontalLine(),
+                new Identifiers.Block.Paragraph(),
+            ];
         }
 
         /**

@@ -1,4 +1,4 @@
-using Markdown.Parsers.Html.Parsers.Inline;
+using Markdown.Parsers.Html.Parsers;
 
 namespace Markdown.Parsers.Html.Parsers.Block;
 
@@ -16,9 +16,10 @@ public class List : IBlockParser
     {
         return
         [
-            new Italic(),
-            new Bold(),
-            new Link(),
+            new Inline.Italic(),
+            new Inline.Bold(),
+            new Inline.Link(),
+            new Inline.Code(),
         ];
     }
 

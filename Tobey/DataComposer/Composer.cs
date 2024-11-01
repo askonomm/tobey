@@ -1,8 +1,13 @@
-﻿namespace Tobey;
+﻿using Tobey.DataComposer.Boolean;
 
-public class DataComposer(List<Dictionary<string, object?>> content)
+namespace Tobey.DataComposer;
+
+public class Composer(List<Dictionary<string, object?>> content)
 {
     private readonly List<string> _specialKeys = ["sort_by", "sort_order", "limit", "offset"];
+    private readonly List<IBoolean> _booleanFunctions = [
+        new StartsWith(),
+    ];
 
     public List<Dictionary<string, object?>> Compose(Dictionary<string, object?> val)
     {
@@ -47,7 +52,7 @@ public class DataComposer(List<Dictionary<string, object?>> content)
         return newContent;
     }
 
-    private static bool MeetsConditions(Dictionary<string, object?> item, Dictionary<string, object?> val)
+    private bool MeetsConditions(Dictionary<string, object?> item, Dictionary<string, object?> val)
     {
         var conditionsCount = val.Count;
         var conditionsMet = 0;
@@ -56,9 +61,25 @@ public class DataComposer(List<Dictionary<string, object?>> content)
         {
             if (!item.TryGetValue(k, out var value)) continue;
             
+            // boolean function, starts with ( and ends with )
+            if (v is string strVal && strVal.StartsWith('(') && strVal.EndsWith(')'))
+            {
+                var contents = strVal[1..^1].Split(' ');
+                var fn = contents[0];
+                var args = contents[1..];
+                var booleanFn = _booleanFunctions.FirstOrDefault(x => x.Name == fn);
+                    
+                if (booleanFn != null && booleanFn.Evaluate(value, args))
+                {
+                    conditionsMet++;
+                    continue;
+                }
+            }
+            
             // is the value a string and the condition a string?
             if (value is string && v is string)
             {
+                // Otherwise it's a regular string comparison
                 if (value.Equals(v))
                 {
                     conditionsMet++;
@@ -66,7 +87,7 @@ public class DataComposer(List<Dictionary<string, object?>> content)
                 }
             }
 
-            // is the value a int and the condition a int?
+            // is the value an int and the condition an int?
             if (value is int && v is int)
             {
                 if (value.Equals(v))

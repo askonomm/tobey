@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Htmt;
+using Tobey.DataComposer;
 
 namespace Tobey;
     
@@ -69,7 +70,7 @@ public class Compiler
                 return;
             }
             
-            var dc = new DataComposer(newContent);
+            var dc = new Composer(newContent);
             
             foreach (var key in composerDict.Keys)
             {

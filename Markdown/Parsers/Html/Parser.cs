@@ -6,23 +6,23 @@
         {
             // Compose block parsers
             // TODO: make it configurable
-            var blockParsers = new List<(string, IBlockParser)> {
-            ("heading", new Parsers.Block.Heading()),
-            ("horizontal_line", new Parsers.Block.HorizontalLine()),
-            ("paragraph", new Parsers.Block.Paragraph()),
-            ("code", new Parsers.Block.Code())
-        };
+            var blockParsers = new List<(string, IBlockParser)>
+            {
+                ("heading", new Parsers.Block.Heading()),
+                ("horizontal_line", new Parsers.Block.HorizontalLine()),
+                ("paragraph", new Parsers.Block.Paragraph()),
+                ("code", new Parsers.Block.Code()),
+                ("list", new Parsers.Block.List()),
+            };
 
             // Stitch blocks
             // TODO: make it configurable
-            var blockStitchers = new List<IBlockStitcher> {
+            var blockStitchers = new List<IBlockStitcher>
+            {
                 new Stitchers.Code()
             };
 
-            foreach (var stitcher in blockStitchers)
-            {
-                blocks = stitcher.Stitch(blocks);
-            }
+            blocks = blockStitchers.Aggregate(blocks, (current, stitcher) => stitcher.Stitch(current));
 
             // Parse blocks
             var html = "";

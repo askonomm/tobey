@@ -16,12 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet publish Tobey/Tobey.csproj /p:Configuration=Release /p:PublishProfile=FolderProfile -o build
-
       - name: Publish
         run: dotnet publish Tobey/Tobey.csproj /p:Configuration=Release /p:PublishProfile=FolderProfile -o publish
 
@@ -43,12 +37,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-          
-      - name: Install dependencies
-        run: dotnet restore
-        
-      - name: Build
-        run: dotnet publish Tobey/Tobey.csproj /p:Configuration=Release /p:PublishProfile=FolderProfile -o build
           
       - name: Publish
         run: dotnet publish Tobey/Tobey.csproj /p:Configuration=Release /p:PublishProfile=FolderProfile -o publish

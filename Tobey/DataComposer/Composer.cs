@@ -7,6 +7,7 @@ public class Composer(List<Dictionary<string, object?>> content)
     private readonly List<string> _specialKeys = ["sort_by", "sort_order", "limit", "offset"];
     private readonly List<IBoolean> _booleanFunctions = [
         new StartsWith(),
+        new EndsWith(),
     ];
 
     public List<Dictionary<string, object?>> Compose(Dictionary<string, object?> val)

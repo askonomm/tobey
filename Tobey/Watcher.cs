@@ -11,27 +11,31 @@ public class Watcher
         watcher.IncludeSubdirectories = true;
         watcher.EnableRaisingEvents = true;
 
-        watcher.Changed += (source, e) => OnChanged(source, e, callback);
-        watcher.Created += (source, e) => OnCreated(source, e, callback);
-        watcher.Deleted += (source, e) => OnDeleted(source, e, callback);
-        watcher.Renamed += (source, e) => OnRenamed(source, e, callback);
+        watcher.Changed += (source, e) => OnChanged(path, source, e, callback);
+        watcher.Created += (source, e) => OnCreated(path, source, e, callback);
+        watcher.Deleted += (source, e) => OnDeleted(path, source, e, callback);
+        watcher.Renamed += (source, e) => OnRenamed(path, source, e, callback);
         
         Console.ReadLine();
     }
 
-    private static void OnChanged(object _, FileSystemEventArgs e, Action callback)
+    private static bool IgnoreFile(string path, string fullPath, string? name)
     {
-        // Ignore output folder changes
-        if (e.FullPath.Contains("output"))
+        if (!path.EndsWith(Path.DirectorySeparatorChar))
         {
-            return;
+            path += Path.DirectorySeparatorChar;
         }
         
-        // Ignore dot files
-        if (e.Name == null || e.Name.StartsWith('.'))
-        {
-            return;
-        }
+        var fullPathDir = Path.GetDirectoryName(fullPath) ?? "";
+        var pathDir = Path.GetDirectoryName(path) ?? "";
+        var relativeDir = fullPathDir?.Replace(pathDir, "").TrimStart(Path.DirectorySeparatorChar);
+
+        return name?.StartsWith('.') == true || relativeDir?.StartsWith("output") == true;
+    }
+
+    private static void OnChanged(string path, object _, FileSystemEventArgs e, Action callback)
+    {
+        if (IgnoreFile(path, e.FullPath, e.Name)) return;
 
         Console.WriteLine($"File: {e.FullPath} {e.ChangeType}");
 
@@ -39,13 +43,9 @@ public class Watcher
         _debounceTimer = new Timer(_ => callback(), null, 500, Timeout.Infinite);
     }
 
-    private static void OnRenamed(object _, RenamedEventArgs e, Action callback)
+    private static void OnRenamed(string path, object _, RenamedEventArgs e, Action callback)
     {
-        // Ignore output folder changes
-        if (e.FullPath.Contains("output"))
-        {
-            return;
-        }
+        if (IgnoreFile(path, e.FullPath, e.Name)) return;
 
         Console.WriteLine($"File: {e.OldFullPath} renamed to {e.FullPath}");
 
@@ -53,13 +53,9 @@ public class Watcher
         _debounceTimer = new Timer(_ => callback(), null, 500, Timeout.Infinite);
     }
 
-    private static void OnDeleted(object _, FileSystemEventArgs e, Action callback)
+    private static void OnDeleted(string path, object _, FileSystemEventArgs e, Action callback)
     {
-        // Ignore output folder changes
-        if (e.FullPath.Contains("output"))
-        {
-            return;
-        }
+        if (IgnoreFile(path, e.FullPath, e.Name)) return;
 
         Console.WriteLine($"File: {e.FullPath} deleted");
 
@@ -67,13 +63,9 @@ public class Watcher
         _debounceTimer = new Timer(_ => callback(), null, 500, Timeout.Infinite);
     }
 
-    private static void OnCreated(object _, FileSystemEventArgs e, Action callback)
+    private static void OnCreated(string path, object _, FileSystemEventArgs e, Action callback)
     {
-        // Ignore output folder changes
-        if (e.FullPath.Contains("output"))
-        {
-            return;
-        }
+        if (IgnoreFile(path, e.FullPath, e.Name)) return;
 
         Console.WriteLine($"File: {e.FullPath} created");
 

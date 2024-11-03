@@ -6,6 +6,10 @@ public class Watcher
     
     public static void Watch(string path, Action callback)
     {
+        // First run
+        callback();
+
+        // Create watcher
         using var watcher = new FileSystemWatcher(path);
         watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime;
         watcher.IncludeSubdirectories = true;

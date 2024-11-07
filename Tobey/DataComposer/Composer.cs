@@ -45,7 +45,7 @@ public class Composer(List<Dictionary<string, object?>> content)
         // limit the content
         if (!val.TryGetValue("limit", out var limit)) return newContent;
         
-        if (limit is int limitInt)
+        if (limit is int limitInt && newContent.Count > limitInt)
         {
             newContent = newContent[..limitInt];
         }

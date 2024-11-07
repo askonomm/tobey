@@ -47,7 +47,7 @@ public class Parser
         var markdown = string.Join("\n", lines[(blockEnd + 1)..]).Trim();
         var html = new Markdown.Parser(markdown).ParseWith(new Markdown.Parsers.Html.Parser());
         
-        data.Add("content", html);
+        data.Add("html", html);
 
         return data;
     }
